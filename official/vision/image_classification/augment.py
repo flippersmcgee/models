@@ -532,8 +532,7 @@ def wrap(image: tf.Tensor) -> tf.Tensor:
   """Returns 'image' with an extra channel set to all 1s."""
   shape = tf.shape(image)
   extended_channel = tf.ones([shape[0], shape[1], 1], image.dtype)
-  extended = tf.concat([image, extended_channel], axis=2)
-  return extended
+  return tf.concat([image, extended_channel], axis=2)
 
 
 def unwrap(image: tf.Tensor, replace: int) -> tf.Tensor:
@@ -577,8 +576,7 @@ def unwrap(image: tf.Tensor, replace: int) -> tf.Tensor:
 def _randomly_negate_tensor(tensor):
   """With 50% prob turn the tensor negative."""
   should_flip = tf.cast(tf.floor(tf.random.uniform([]) + 0.5), tf.bool)
-  final_tensor = tf.cond(should_flip, lambda: tensor, lambda: -tensor)
-  return final_tensor
+  return tf.cond(should_flip, lambda: tensor, lambda: -tensor)
 
 
 def _rotate_level_to_arg(level: float):
@@ -628,11 +626,10 @@ def _apply_func_with_prob(func: Any,
   # Apply the function with probability `prob`.
   should_apply_op = tf.cast(
       tf.floor(tf.random.uniform([], dtype=tf.float32) + prob), tf.bool)
-  augmented_image = tf.cond(
+  return tf.cond(
       should_apply_op,
       lambda: func(image, *args),
       lambda: image)
-  return augmented_image
 
 
 def select_and_apply_random_policy(policies: Any, image: tf.Tensor):
@@ -688,7 +685,7 @@ def level_to_arg(cutout_const: float, translate_const: float):
   cutout_arg = lambda level: _mult_to_arg(level, cutout_const)
   translate_arg = lambda level: _translate_level_to_arg(level, translate_const)
 
-  args = {
+  return {
       'AutoContrast': no_arg,
       'Equalize': no_arg,
       'Invert': no_arg,
@@ -706,7 +703,6 @@ def level_to_arg(cutout_const: float, translate_const: float):
       'TranslateX': translate_arg,
       'TranslateY': translate_arg,
   }
-  return args
 
 
 def _parse_policy_info(name: Text,
@@ -889,7 +885,7 @@ class AutoAugment(ImageAugment):
   def policy_simple():
     """Same as `policy_v0`, except with custom ops removed."""
 
-    policy = [
+    return [
         [('Color', 0.4, 9), ('Equalize', 0.6, 3)],
         [('Solarize', 0.8, 3), ('Equalize', 0.4, 7)],
         [('Solarize', 0.4, 2), ('Solarize', 0.6, 2)],
@@ -904,15 +900,13 @@ class AutoAugment(ImageAugment):
         [('Posterize', 0.8, 2), ('Solarize', 0.6, 10)],
         [('Solarize', 0.6, 8), ('Equalize', 0.6, 1)],
     ]
-    return policy
 
   @staticmethod
   def policy_test():
     """Autoaugment test policy for debugging."""
-    policy = [
+    return [
         [('TranslateX', 1.0, 4), ('Equalize', 1.0, 10)],
     ]
-    return policy
 
 
 class RandAugment(ImageAugment):

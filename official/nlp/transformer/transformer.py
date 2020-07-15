@@ -40,8 +40,8 @@ from official.nlp.transformer.utils.tokenizer import EOS_ID
 def create_model(params, is_train):
   """Creates transformer model."""
   with tf.name_scope("model"):
+    inputs = tf.keras.layers.Input((None,), dtype="int64", name="inputs")
     if is_train:
-      inputs = tf.keras.layers.Input((None,), dtype="int64", name="inputs")
       targets = tf.keras.layers.Input((None,), dtype="int64", name="targets")
       internal_model = Transformer(params, name="transformer_v2")
       logits = internal_model([inputs, targets], training=is_train)
@@ -58,7 +58,6 @@ def create_model(params, is_train):
       return model
 
     else:
-      inputs = tf.keras.layers.Input((None,), dtype="int64", name="inputs")
       internal_model = Transformer(params, name="transformer_v2")
       ret = internal_model([inputs], training=is_train)
       outputs, scores = ret["outputs"], ret["scores"]
@@ -149,8 +148,7 @@ class Transformer(tf.keras.Model):
       if targets is None:
         return self.predict(encoder_outputs, attention_bias, training)
       else:
-        logits = self.decode(targets, encoder_outputs, attention_bias, training)
-        return logits
+        return self.decode(targets, encoder_outputs, attention_bias, training)
 
   def encode(self, inputs, attention_bias, training):
     """Generate continuous representation for inputs.
@@ -443,15 +441,15 @@ class EncoderStack(tf.keras.layers.Layer):
       float32 tensor with shape [batch_size, input_length, hidden_size]
     """
     for n, layer in enumerate(self.layers):
-      # Run inputs through the sublayers.
-      self_attention_layer = layer[0]
-      feed_forward_network = layer[1]
-
       with tf.name_scope("layer_%d" % n):
         with tf.name_scope("self_attention"):
+          # Run inputs through the sublayers.
+          self_attention_layer = layer[0]
           encoder_inputs = self_attention_layer(
               encoder_inputs, attention_bias, training=training)
         with tf.name_scope("ffn"):
+          feed_forward_network = layer[1]
+
           encoder_inputs = feed_forward_network(
               encoder_inputs, training=training)
 
@@ -535,15 +533,12 @@ class DecoderStack(tf.keras.layers.Layer):
       float32 tensor with shape [batch_size, target_length, hidden_size]
     """
     for n, layer in enumerate(self.layers):
-      self_attention_layer = layer[0]
-      enc_dec_attention_layer = layer[1]
-      feed_forward_network = layer[2]
-
       # Run inputs through the sublayers.
       layer_name = "layer_%d" % n
       layer_cache = cache[layer_name] if cache is not None else None
       with tf.name_scope(layer_name):
         with tf.name_scope("self_attention"):
+          self_attention_layer = layer[0]
           decoder_inputs = self_attention_layer(
               decoder_inputs,
               decoder_self_attention_bias,
@@ -551,12 +546,15 @@ class DecoderStack(tf.keras.layers.Layer):
               cache=layer_cache,
               decode_loop_step=decode_loop_step)
         with tf.name_scope("encdec_attention"):
+          enc_dec_attention_layer = layer[1]
           decoder_inputs = enc_dec_attention_layer(
               decoder_inputs,
               encoder_outputs,
               attention_bias,
               training=training)
         with tf.name_scope("ffn"):
+          feed_forward_network = layer[2]
+
           decoder_inputs = feed_forward_network(
               decoder_inputs, training=training)
 

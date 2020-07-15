@@ -346,8 +346,7 @@ def run_ncf(_):
         train_history = history.history
         train_loss = train_history["loss"][-1]
 
-  stats = build_stats(train_loss, eval_results, time_callback)
-  return stats
+  return build_stats(train_loss, eval_results, time_callback)
 
 
 def run_ncf_custom_training(params,

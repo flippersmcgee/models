@@ -79,10 +79,7 @@ def convert_single_example(example_index, example, label_list, max_seq_length,
         is_real_example=False)
 
   if label_list is not None:
-    label_map = {}
-    for (i, label) in enumerate(label_list):
-      label_map[label] = i
-
+    label_map = {label: i for (i, label) in enumerate(label_list)}
   tokens_a = tokenize_fn(example.text_a)
   tokens_b = None
   if example.text_b:
@@ -130,9 +127,9 @@ def convert_single_example(example_index, example, label_list, max_seq_length,
   if len(input_ids) < max_seq_length:
     delta_len = max_seq_length - len(input_ids)
     if use_bert_format:
-      input_ids = input_ids + [0] * delta_len
+      input_ids += [0] * delta_len
       input_mask = input_mask + [1] * delta_len
-      segment_ids = segment_ids + [data_utils.SEG_ID_PAD] * delta_len
+      segment_ids += [data_utils.SEG_ID_PAD] * delta_len
     else:
       input_ids = [0] * delta_len + input_ids
       input_mask = [1] * delta_len + input_mask
@@ -154,9 +151,8 @@ def convert_single_example(example_index, example, label_list, max_seq_length,
     logging.info("segment_ids: %s", " ".join([str(x) for x in segment_ids]))
     logging.info("label: %d (id = %d)", example.label, label_id)
 
-  feature = InputFeatures(
+  return InputFeatures(
       input_ids=input_ids,
       input_mask=input_mask,
       segment_ids=segment_ids,
       label_id=label_id)
-  return feature

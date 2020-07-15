@@ -60,8 +60,7 @@ def pad_to_size(input_tensor, size):
 
   # Pads input tensor to the fixed first dimension.
   paddings = tf.cast(tf.zeros(padding_shape), input_tensor.dtype)
-  padded_tensor = tf.concat([input_tensor, paddings], axis=0)
-  return padded_tensor
+  return tf.concat([input_tensor, paddings], axis=0)
 
 
 class Parser(object):
@@ -186,7 +185,7 @@ class Parser(object):
       self._parse_fn = self._parse_train_data
     elif mode == ModeKeys.EVAL:
       self._parse_fn = self._parse_eval_data
-    elif mode == ModeKeys.PREDICT or mode == ModeKeys.PREDICT_WITH_GT:
+    elif mode in [ModeKeys.PREDICT, ModeKeys.PREDICT_WITH_GT]:
       self._parse_fn = self._parse_predict_data
     else:
       raise ValueError('mode is not defined.')

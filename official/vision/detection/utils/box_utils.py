@@ -63,10 +63,8 @@ def yxyx_to_xywh(boxes):
   boxes_xmin = boxes[..., 1]
   boxes_width = boxes[..., 3] - boxes[..., 1]
   boxes_height = boxes[..., 2] - boxes[..., 0]
-  new_boxes = np.stack([boxes_xmin, boxes_ymin, boxes_width, boxes_height],
+  return np.stack([boxes_xmin, boxes_ymin, boxes_width, boxes_height],
                        axis=-1)
-
-  return new_boxes
 
 
 def jitter_boxes(boxes, noise_scale=0.025):
@@ -102,13 +100,11 @@ def jitter_boxes(boxes, noise_scale=0.025):
     new_center_y = (ymin + ymax) / 2.0 + bbox_jitters[..., 1:2] * height
     new_width = width * tf.math.exp(bbox_jitters[..., 2:3])
     new_height = height * tf.math.exp(bbox_jitters[..., 3:4])
-    jittered_boxes = tf.concat([
+    return tf.concat([
         new_center_y - new_height * 0.5, new_center_x - new_width * 0.5,
         new_center_y + new_height * 0.5, new_center_x + new_width * 0.5
     ],
                                axis=-1)
-
-    return jittered_boxes
 
 
 def normalize_boxes(boxes, image_shape):
@@ -145,8 +141,7 @@ def normalize_boxes(boxes, image_shape):
     ymax = boxes[..., 2:3] / height
     xmax = boxes[..., 3:4] / width
 
-    normalized_boxes = tf.concat([ymin, xmin, ymax, xmax], axis=-1)
-    return normalized_boxes
+    return tf.concat([ymin, xmin, ymax, xmax], axis=-1)
 
 
 def denormalize_boxes(boxes, image_shape):
@@ -179,8 +174,7 @@ def denormalize_boxes(boxes, image_shape):
     ymax = ymax * height
     xmax = xmax * width
 
-    denormalized_boxes = tf.concat([ymin, xmin, ymax, xmax], axis=-1)
-    return denormalized_boxes
+    return tf.concat([ymin, xmin, ymax, xmax], axis=-1)
 
 
 def clip_boxes(boxes, image_shape):
@@ -214,8 +208,7 @@ def clip_boxes(boxes, image_shape):
       max_length = tf.stack(
           [height - 1.0, width - 1.0, height - 1.0, width - 1.0], axis=-1)
 
-    clipped_boxes = tf.math.maximum(tf.math.minimum(boxes, max_length), 0.0)
-    return clipped_boxes
+    return tf.math.maximum(tf.math.minimum(boxes, max_length), 0.0)
 
 
 def compute_outer_boxes(boxes, image_shape, scale=1.0):
@@ -302,10 +295,9 @@ def encode_boxes(boxes, anchors, weights=None):
       encoded_dh *= weights[2]
       encoded_dw *= weights[3]
 
-    encoded_boxes = tf.concat(
+    return tf.concat(
         [encoded_dy, encoded_dx, encoded_dh, encoded_dw],
         axis=-1)
-    return encoded_boxes
 
 
 def decode_boxes(encoded_boxes, anchors, weights=None):
@@ -359,11 +351,10 @@ def decode_boxes(encoded_boxes, anchors, weights=None):
     decoded_boxes_ymax = decoded_boxes_ymin + decoded_boxes_h - 1.0
     decoded_boxes_xmax = decoded_boxes_xmin + decoded_boxes_w - 1.0
 
-    decoded_boxes = tf.concat(
+    return tf.concat(
         [decoded_boxes_ymin, decoded_boxes_xmin,
          decoded_boxes_ymax, decoded_boxes_xmax],
         axis=-1)
-    return decoded_boxes
 
 
 def filter_boxes(boxes, scores, image_shape, min_size_threshold):

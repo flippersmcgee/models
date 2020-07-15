@@ -48,7 +48,7 @@ def get_loss_scale(flags_obj, default_for_fp16):
     return flags_obj.loss_scale
   elif flags_obj.loss_scale is not None:
     return float(flags_obj.loss_scale)
-  elif dtype == tf.float32 or dtype == tf.bfloat16:
+  elif dtype in [tf.float32, tf.bfloat16]:
     return 1  # No loss scaling is needed for fp32
   else:
     assert dtype == tf.float16

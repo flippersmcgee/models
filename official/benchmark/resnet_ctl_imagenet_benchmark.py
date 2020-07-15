@@ -442,13 +442,13 @@ class Resnet50CtlBenchmarkSynth(Resnet50CtlBenchmarkBase):
   """Resnet50 synthetic benchmark tests."""
 
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
-    def_flags = {}
-    def_flags['skip_eval'] = True
-    def_flags['use_synthetic_data'] = True
-    def_flags['train_steps'] = 110
-    def_flags['steps_per_loop'] = 10
-    def_flags['log_steps'] = 10
-
+    def_flags = {
+        'skip_eval': True,
+        'use_synthetic_data': True,
+        'train_steps': 110,
+        'steps_per_loop': 10,
+        'log_steps': 10,
+    }
     super(Resnet50CtlBenchmarkSynth, self).__init__(
         output_dir=output_dir, default_flags=def_flags, **kwargs)
 
@@ -457,13 +457,13 @@ class Resnet50CtlBenchmarkReal(Resnet50CtlBenchmarkBase):
   """Resnet50 real data benchmark tests."""
 
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
-    def_flags = {}
-    def_flags['skip_eval'] = True
-    def_flags['data_dir'] = os.path.join(root_data_dir, 'imagenet')
-    def_flags['train_steps'] = 110
-    def_flags['steps_per_loop'] = 10
-    def_flags['log_steps'] = 10
-
+    def_flags = {
+        'skip_eval': True,
+        'data_dir': os.path.join(root_data_dir, 'imagenet'),
+        'train_steps': 110,
+        'steps_per_loop': 10,
+        'log_steps': 10,
+    }
     super(Resnet50CtlBenchmarkReal, self).__init__(
         output_dir=output_dir, default_flags=def_flags, **kwargs)
 

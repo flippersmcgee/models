@@ -196,9 +196,10 @@ def run(flags_obj):
   if flags_obj.use_tensor_lr:
     initial_learning_rate = common.BASE_LEARNING_RATE * flags_obj.batch_size / 128
     lr_schedule = tf.keras.optimizers.schedules.PiecewiseConstantDecay(
-        boundaries=list(p[1] * steps_per_epoch for p in LR_SCHEDULE),
+        boundaries=[p[1] * steps_per_epoch for p in LR_SCHEDULE],
         values=[initial_learning_rate] +
-        list(p[0] * initial_learning_rate for p in LR_SCHEDULE))
+        [p[0] * initial_learning_rate for p in LR_SCHEDULE],
+    )
 
   with strategy_scope:
     optimizer = common.get_optimizer(lr_schedule)
@@ -261,8 +262,7 @@ def run(flags_obj):
   if not strategy and flags_obj.explicit_gpu_placement:
     no_dist_strat_device.__exit__()
 
-  stats = common.build_stats(history, eval_output, callbacks)
-  return stats
+  return common.build_stats(history, eval_output, callbacks)
 
 
 def define_cifar_flags():

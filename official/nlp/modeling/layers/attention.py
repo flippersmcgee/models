@@ -61,8 +61,8 @@ def _build_attention_equation(qkv_rank, attn_axes):
   batch_dims = tuple(np.delete(range(qkv_rank), attn_axes + (qkv_rank - 1,)))
   letter_offset = qkv_rank
   source_notation = ""
-  for i in range(qkv_rank):
-    if i in batch_dims or i == qkv_rank - 1:
+  for i in range(letter_offset):
+    if i in batch_dims or i == letter_offset - 1:
       source_notation += target_notation[i]
     else:
       source_notation += _CHR_IDX[letter_offset]

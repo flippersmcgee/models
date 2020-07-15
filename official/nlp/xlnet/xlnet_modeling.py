@@ -577,9 +577,9 @@ class TransformerXLModel(tf.keras.layers.Layer):
     if input_mask is not None and perm_mask is not None:
       data_mask = input_mask[None] + perm_mask
 
-    elif input_mask is not None and perm_mask is None:
+    elif input_mask is not None:
       data_mask = input_mask[None]
-    elif input_mask is None and perm_mask is not None:
+    elif perm_mask is not None:
       data_mask = perm_mask
     else:
       data_mask = None
@@ -724,11 +724,7 @@ class TransformerXLModel(tf.keras.layers.Layer):
       if output_g is not None:
         output_g = ffn_layer(output_g)
 
-    if inp_q is not None:
-      output = output_g
-    else:
-      output = output_h
-
+    output = output_g if inp_q is not None else output_h
     return output, new_mems, None
 
 
@@ -1125,9 +1121,8 @@ class QAXLNetModel(tf.keras.Model):
       self.add_loss(loss)
       return new_mems, logits
     else:
-      results = self.qa_loss_layer(
+      return self.qa_loss_layer(
           hidden=transformerxl_output, p_mask=p_mask, cls_index=cls_index)
-      return results
 
 
 class QALossLayer(tf.keras.layers.Layer):

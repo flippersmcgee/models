@@ -134,8 +134,7 @@ def create_classification_dataset(file_path, seq_length, batch_size,
 
   input_fn = file_based_input_fn_builder(file_path, name_to_features,
                                          batch_size, is_training)
-  dataset = input_fn()
-  return dataset
+  return input_fn()
 
 
 def create_squad_dataset(file_path, seq_length, batch_size, is_training):
@@ -156,8 +155,7 @@ def create_squad_dataset(file_path, seq_length, batch_size, is_training):
 
   input_fn = file_based_input_fn_builder(file_path, name_to_features,
                                          batch_size, is_training)
-  dataset = input_fn()
-  return dataset
+  return input_fn()
 
 
 def get_input_iterator(input_fn, strategy):
@@ -198,12 +196,11 @@ def get_classification_input_data(batch_size, seq_len, strategy, is_training,
   def _dataset_fn(ctx=None):
     del ctx
 
-    train_dataset = create_classification_dataset(
+    return create_classification_dataset(
         file_path=file_path,
         seq_length=seq_len,
         batch_size=batch_size,
         is_training=is_training)
-    return train_dataset
 
   return _dataset_fn if use_dataset_fn else _dataset_fn()
 
@@ -240,12 +237,11 @@ def get_squad_input_data(batch_size, seq_len, q_len, strategy, is_training,
   def _dataset_fn(ctx=None):
     del ctx
 
-    train_dataset = create_squad_dataset(
+    return create_squad_dataset(
         file_path=global_input_paths,
         seq_length=seq_len,
         batch_size=batch_size,
         is_training=is_training)
-    return train_dataset
 
   return _dataset_fn if use_dataset_fn else _dataset_fn()
 
@@ -572,15 +568,9 @@ def format_filename(prefix, suffix, bsz_per_host, seq_len, reuse_len=None,
     reuse_str = ""
     bsz_str = ""
 
-  if not uncased:
-    case_str = ""
-  else:
-    case_str = "uncased."
-
-  file_name = "{}.seq-{}.{}{}{}{}".format(
+  case_str = "" if not uncased else "uncased."
+  return "{}.seq-{}.{}{}{}{}".format(
       prefix, seq_len, reuse_str, bsz_str, case_str, suffix)
-
-  return file_name
 
 
 def get_pretrain_input_data(batch_size,
@@ -675,7 +665,7 @@ def get_pretrain_input_data(batch_size,
   def _dataset_fn(ctx=None):
     """Function that can create a pretrain dataset."""
 
-    train_dataset = create_pretrain_dataset(
+    return create_pretrain_dataset(
         file_names=record_info["filenames"],
         bsz_per_core=batch_size,
         seq_len=seq_len,
@@ -685,7 +675,6 @@ def get_pretrain_input_data(batch_size,
         online_masking_config=online_masking_config,
         num_predict=num_predict,
         input_pipeline_context=ctx)
-    return train_dataset
 
   return _dataset_fn if use_dataset_fn else _dataset_fn()
 

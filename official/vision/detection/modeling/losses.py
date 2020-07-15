@@ -396,10 +396,10 @@ class RetinanetClassLoss(object):
     # num_positives_sum, which would lead to inf loss during training
     num_positives_sum = tf.reduce_sum(input_tensor=num_positives) + 1.0
 
-    cls_losses = []
-    for level in cls_outputs.keys():
-      cls_losses.append(self.class_loss(
-          cls_outputs[level], labels[level], num_positives_sum))
+    cls_losses = [
+        self.class_loss(cls_outputs[level], labels[level], num_positives_sum)
+        for level in cls_outputs.keys()
+    ]
     # Sums per level losses to total loss.
     return tf.add_n(cls_losses)
 

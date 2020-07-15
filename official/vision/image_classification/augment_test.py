@@ -77,8 +77,8 @@ class TransformsTest(parameterized.TestCase, tf.test.TestCase):
 
   def test_translate_invalid_translation(self, dtype):
     image = tf.zeros((1, 1), dtype=dtype)
-    invalid_translation = [[[1, 1]]]
     with self.assertRaisesRegex(TypeError, 'rank 1 or 2'):
+      invalid_translation = [[[1, 1]]]
       _ = augment.translate(image, invalid_translation)
 
   def test_rotate(self, dtype):

@@ -52,7 +52,7 @@ class RawDataProcessor(object):
         debug usage. If include_article_title_in_passage=True, title and body
         will be separated by [SEP].
     """
-    self.articles = dict()
+    self.articles = {}
     self.tokenizer = tokenization.FullTokenizer(
         vocab, do_lower_case=do_lower_case, split_on_punc=False)
     self.len_title = len_title
@@ -116,7 +116,7 @@ class RawDataProcessor(object):
         urllib.parse.urlsplit(url)._replace(query=None).geturl())
     output, part = [], None
     for part in url.split("//"):
-      if part == "http:" or part == "https:":
+      if part in ["http:", "https:"]:
         continue
       else:
         output.append(part)

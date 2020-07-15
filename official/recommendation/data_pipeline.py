@@ -252,8 +252,7 @@ class DatasetManager(object):
       if self._result_reuse:
         assert len(self._result_reuse) == self._batches_per_epoch
 
-        for i in self._result_reuse:
-          yield i
+        yield from self._result_reuse
       else:
         # First epoch.
         for _ in range(self._batches_per_epoch * epochs_between_evals):
@@ -575,12 +574,12 @@ class BaseDataConstructor(threading.Thread):
       return
 
     self._train_dataset.start_construction()
-    map_args = list(range(self.train_batches_per_epoch))
     self._current_epoch_order = next(self._shuffle_iterator)
 
     get_pool = (popen_helper.get_fauxpool if self.deterministic else
                 popen_helper.get_threadpool)
     with get_pool(6) as pool:
+      map_args = list(range(self.train_batches_per_epoch))
       pool.map(self._get_training_batch, map_args)
     self._train_dataset.end_construction()
 
@@ -662,11 +661,11 @@ class BaseDataConstructor(threading.Thread):
     start_time = timeit.default_timer()
 
     self._eval_dataset.start_construction()
-    map_args = [i for i in range(self.eval_batches_per_epoch)]
-
     get_pool = (popen_helper.get_fauxpool if self.deterministic else
                 popen_helper.get_threadpool)
     with get_pool(6) as pool:
+      map_args = [i for i in range(self.eval_batches_per_epoch)]
+
       pool.map(self._get_eval_batch, map_args)
     self._eval_dataset.end_construction()
 

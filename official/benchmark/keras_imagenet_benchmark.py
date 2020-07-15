@@ -1090,9 +1090,7 @@ class Resnet50KerasBenchmarkSynth(Resnet50KerasClassifierBenchmarkBase):
   """Resnet50 synthetic benchmark tests."""
 
   def __init__(self, output_dir=None, root_data_dir=None, tpu=None, **kwargs):
-    def_flags = {}
-    def_flags['log_steps'] = 10
-
+    def_flags = {'log_steps': 10}
     super(Resnet50KerasBenchmarkSynth, self).__init__(
         output_dir=output_dir, default_flags=def_flags, tpu=tpu,
         dataset_builder='synthetic', train_epochs=1, train_steps=110)
@@ -1103,9 +1101,7 @@ class Resnet50KerasBenchmarkReal(Resnet50KerasClassifierBenchmarkBase):
 
   def __init__(self, output_dir=None, root_data_dir=None, tpu=None, **kwargs):
     data_dir = os.path.join(root_data_dir, 'imagenet')
-    def_flags = {}
-    def_flags['log_steps'] = 10
-
+    def_flags = {'log_steps': 10}
     super(Resnet50KerasBenchmarkReal, self).__init__(
         output_dir=output_dir, default_flags=def_flags, tpu=tpu,
         dataset_builder='records', train_epochs=1, train_steps=110,
@@ -1355,16 +1351,16 @@ class TrivialKerasBenchmarkReal(keras_benchmark.KerasBenchmark):
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
     flag_methods = [resnet_imagenet_main.define_imagenet_keras_flags]
 
-    def_flags = {}
-    def_flags['use_trivial_model'] = True
-    def_flags['skip_eval'] = True
-    def_flags['report_accuracy_metrics'] = False
-    def_flags['dtype'] = 'fp16'
-    def_flags['data_dir'] = os.path.join(root_data_dir, 'imagenet')
-    def_flags['train_steps'] = 600
-    def_flags['log_steps'] = 100
-    def_flags['distribution_strategy'] = 'mirrored'
-
+    def_flags = {
+        'use_trivial_model': True,
+        'skip_eval': True,
+        'report_accuracy_metrics': False,
+        'dtype': 'fp16',
+        'data_dir': os.path.join(root_data_dir, 'imagenet'),
+        'train_steps': 600,
+        'log_steps': 100,
+        'distribution_strategy': 'mirrored',
+    }
     super(TrivialKerasBenchmarkReal, self).__init__(
         output_dir=output_dir,
         flag_methods=flag_methods,
@@ -1524,13 +1520,13 @@ class Resnet50MultiWorkerKerasBenchmarkSynth(Resnet50MultiWorkerKerasBenchmark):
   """Resnet50 multi-worker synthetic data benchmark tests."""
 
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
-    def_flags = {}
-    def_flags['skip_eval'] = True
-    def_flags['report_accuracy_metrics'] = False
-    def_flags['use_synthetic_data'] = True
-    def_flags['train_steps'] = 110
-    def_flags['log_steps'] = 10
-
+    def_flags = {
+        'skip_eval': True,
+        'report_accuracy_metrics': False,
+        'use_synthetic_data': True,
+        'train_steps': 110,
+        'log_steps': 10,
+    }
     super(Resnet50MultiWorkerKerasBenchmarkSynth, self).__init__(
         output_dir=output_dir, default_flags=def_flags)
 
@@ -1539,13 +1535,13 @@ class Resnet50MultiWorkerKerasBenchmarkReal(Resnet50MultiWorkerKerasBenchmark):
   """Resnet50 multi-worker real data benchmark tests."""
 
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
-    def_flags = {}
-    def_flags['skip_eval'] = True
-    def_flags['report_accuracy_metrics'] = False
-    def_flags['data_dir'] = os.path.join(root_data_dir, 'imagenet')
-    def_flags['train_steps'] = 110
-    def_flags['log_steps'] = 10
-
+    def_flags = {
+        'skip_eval': True,
+        'report_accuracy_metrics': False,
+        'data_dir': os.path.join(root_data_dir, 'imagenet'),
+        'train_steps': 110,
+        'log_steps': 10,
+    }
     super(Resnet50MultiWorkerKerasBenchmarkReal, self).__init__(
         output_dir=output_dir, default_flags=def_flags)
 

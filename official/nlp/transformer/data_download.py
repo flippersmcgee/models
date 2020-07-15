@@ -364,10 +364,7 @@ def dict_to_example(dictionary):
 
 def all_exist(filepaths):
   """Returns true if all files in the list exist."""
-  for fname in filepaths:
-    if not tf.gfile.Exists(fname):
-      return False
-  return True
+  return all(tf.gfile.Exists(fname) for fname in filepaths)
 
 
 def make_dir(path):

@@ -88,7 +88,7 @@ class KerasImagenetTest(tf.test.TestCase):
     extra_flags = [
         "-distribution_strategy", "off",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,
@@ -102,7 +102,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-enable_eager", "false",
         "-distribution_strategy", "off",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,
@@ -123,7 +123,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-distribution_strategy", "mirrored",
         "-enable_checkpoint_and_export", "1",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,
@@ -144,7 +144,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-dtype", "fp16",
         "-distribution_strategy", "mirrored",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     if "polynomial_decay" in extra_flags:
       self.skipTest("Pruning with fp16 is not currently supported.")
@@ -167,7 +167,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-num_gpus", "2",
         "-distribution_strategy", "mirrored",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,
@@ -188,7 +188,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-enable_xla", "true",
         "-distribution_strategy", "mirrored",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,
@@ -209,7 +209,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-dtype", "fp16",
         "-distribution_strategy", "mirrored",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     if "polynomial_decay" in extra_flags:
       self.skipTest("Pruning with fp16 is not currently supported.")
@@ -233,7 +233,7 @@ class KerasImagenetTest(tf.test.TestCase):
         "-enable_xla", "true",
         "-distribution_strategy", "mirrored",
     ]
-    extra_flags = extra_flags + self.get_extra_flags_dict(flags_key)
+    extra_flags += self.get_extra_flags_dict(flags_key)
 
     if "polynomial_decay" in extra_flags:
       self.skipTest("Pruning with fp16 is not currently supported.")

@@ -218,9 +218,8 @@ class TargetAssigner(object):
     matched_anchors_mask = tf.tile(
         tf.expand_dims(matched_anchors_mask, 1),
         [1, tf.shape(matched_reg_targets)[1]])
-    reg_targets = tf.where(matched_anchors_mask, matched_reg_targets,
+    return tf.where(matched_anchors_mask, matched_reg_targets,
                            unmatched_ignored_reg_targets)
-    return reg_targets
 
   def _default_regression_target(self):
     """Returns the default target for anchors to regress to.

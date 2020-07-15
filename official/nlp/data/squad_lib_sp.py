@@ -67,9 +67,7 @@ class SquadExample(object):
     s += ", paragraph_text: [%s]" % (" ".join(self.paragraph_text))
     if self.start_position:
       s += ", start_position: %d" % (self.start_position)
-    if self.start_position:
       s += ", end_position: %d" % (self.end_position)
-    if self.start_position:
       s += ", is_impossible: %r" % (self.is_impossible)
     return s
 
@@ -708,11 +706,9 @@ def postprocess_output(all_examples,
         if final_text in seen_predictions:
           continue
 
-        seen_predictions[final_text] = True
       else:
         final_text = ""
-        seen_predictions[final_text] = True
-
+      seen_predictions[final_text] = True
       nbest.append(
           _NbestPrediction(
               text=final_text,
@@ -720,12 +716,11 @@ def postprocess_output(all_examples,
               end_logit=pred.end_logit))
 
     # if we didn't inlude the empty option in the n-best, inlcude it
-    if version_2_with_negative:
-      if "" not in seen_predictions:
-        nbest.append(
-            _NbestPrediction(
-                text="", start_logit=null_start_logit,
-                end_logit=null_end_logit))
+    if version_2_with_negative and "" not in seen_predictions:
+      nbest.append(
+          _NbestPrediction(
+              text="", start_logit=null_start_logit,
+              end_logit=null_end_logit))
     # In very rare edge cases we could have no valid predictions. So we
     # just create a nonce prediction in this case to avoid failure.
     if not nbest:
@@ -738,9 +733,8 @@ def postprocess_output(all_examples,
     best_non_null_entry = None
     for entry in nbest:
       total_scores.append(entry.start_logit + entry.end_logit)
-      if not best_non_null_entry:
-        if entry.text:
-          best_non_null_entry = entry
+      if not best_non_null_entry and entry.text:
+        best_non_null_entry = entry
 
     probs = _compute_softmax(total_scores)
 
@@ -807,10 +801,7 @@ def _compute_softmax(scores):
     exp_scores.append(x)
     total_sum += x
 
-  probs = []
-  for score in exp_scores:
-    probs.append(score / total_sum)
-  return probs
+  return [score / total_sum for score in exp_scores]
 
 
 class FeatureWriter(object):
@@ -828,9 +819,8 @@ class FeatureWriter(object):
     self.num_features += 1
 
     def create_int_feature(values):
-      feature = tf.train.Feature(
+      return tf.train.Feature(
           int64_list=tf.train.Int64List(value=list(values)))
-      return feature
 
     features = collections.OrderedDict()
     features["unique_ids"] = create_int_feature([feature.unique_id])
@@ -880,7 +870,7 @@ def generate_tf_record_from_json_file(input_file_path,
       do_lower_case=do_lower_case)
   train_writer.close()
 
-  meta_data = {
+  return {
       "task_type": "bert_squad",
       "train_data_size": number_of_examples,
       "max_seq_length": max_seq_length,
@@ -888,5 +878,3 @@ def generate_tf_record_from_json_file(input_file_path,
       "doc_stride": doc_stride,
       "version_2_with_negative": version_2_with_negative,
   }
-
-  return meta_data

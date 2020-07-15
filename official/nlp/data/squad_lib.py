@@ -76,9 +76,7 @@ class SquadExample(object):
     s += ", doc_tokens: [%s]" % (" ".join(self.doc_tokens))
     if self.start_position:
       s += ", start_position: %d" % (self.start_position)
-    if self.start_position:
       s += ", end_position: %d" % (self.end_position)
-    if self.start_position:
       s += ", is_impossible: %r" % (self.is_impossible)
     return s
 
@@ -128,9 +126,8 @@ class FeatureWriter(object):
     self.num_features += 1
 
     def create_int_feature(values):
-      feature = tf.train.Feature(
+      return tf.train.Feature(
           int64_list=tf.train.Int64List(value=list(values)))
-      return feature
 
     features = collections.OrderedDict()
     features["unique_ids"] = create_int_feature([feature.unique_id])
@@ -159,9 +156,7 @@ def read_squad_examples(input_file, is_training, version_2_with_negative):
     input_data = json.load(reader)["data"]
 
   def is_whitespace(c):
-    if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
-      return True
-    return False
+    return c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F
 
   examples = []
   for entry in input_data:
@@ -347,8 +342,7 @@ def convert_examples_to_features(examples,
         doc_start = doc_span.start
         doc_end = doc_span.start + doc_span.length - 1
         out_of_span = False
-        if not (tok_start_position >= doc_start and
-                tok_end_position <= doc_end):
+        if tok_start_position < doc_start or tok_end_position > doc_end:
           out_of_span = True
         if out_of_span:
           start_position = 0
@@ -414,8 +408,8 @@ def convert_examples_to_features(examples,
   if not is_training and feature:
     assert batch_size
     num_padding = 0
-    num_examples = unique_id - base_id
     if unique_id % batch_size != 0:
+      num_examples = unique_id - base_id
       num_padding = batch_size - (num_examples % batch_size)
     logging.info("Adding padding examples to make sure no partial batch.")
     logging.info("Adds %d padding examples for inference.", num_padding)
@@ -654,11 +648,9 @@ def postprocess_output(all_examples,
         if final_text in seen_predictions:
           continue
 
-        seen_predictions[final_text] = True
       else:
         final_text = ""
-        seen_predictions[final_text] = True
-
+      seen_predictions[final_text] = True
       nbest.append(
           _NbestPrediction(
               text=final_text,
@@ -666,12 +658,11 @@ def postprocess_output(all_examples,
               end_logit=pred.end_logit))
 
     # if we didn't inlude the empty option in the n-best, inlcude it
-    if version_2_with_negative:
-      if "" not in seen_predictions:
-        nbest.append(
-            _NbestPrediction(
-                text="", start_logit=null_start_logit,
-                end_logit=null_end_logit))
+    if version_2_with_negative and "" not in seen_predictions:
+      nbest.append(
+          _NbestPrediction(
+              text="", start_logit=null_start_logit,
+              end_logit=null_end_logit))
     # In very rare edge cases we could have no valid predictions. So we
     # just create a nonce prediction in this case to avoid failure.
     if not nbest:
@@ -684,9 +675,8 @@ def postprocess_output(all_examples,
     best_non_null_entry = None
     for entry in nbest:
       total_scores.append(entry.start_logit + entry.end_logit)
-      if not best_non_null_entry:
-        if entry.text:
-          best_non_null_entry = entry
+      if not best_non_null_entry and entry.text:
+        best_non_null_entry = entry
 
     probs = _compute_softmax(total_scores)
 
@@ -854,10 +844,7 @@ def _compute_softmax(scores):
     exp_scores.append(x)
     total_sum += x
 
-  probs = []
-  for score in exp_scores:
-    probs.append(score / total_sum)
-  return probs
+  return [score / total_sum for score in exp_scores]
 
 
 def generate_tf_record_from_json_file(input_file_path,
@@ -886,7 +873,7 @@ def generate_tf_record_from_json_file(input_file_path,
       output_fn=train_writer.process_feature)
   train_writer.close()
 
-  meta_data = {
+  return {
       "task_type": "bert_squad",
       "train_data_size": number_of_examples,
       "max_seq_length": max_seq_length,
@@ -894,5 +881,3 @@ def generate_tf_record_from_json_file(input_file_path,
       "doc_stride": doc_stride,
       "version_2_with_negative": version_2_with_negative,
   }
-
-  return meta_data

@@ -140,6 +140,5 @@ class OptimizerFactory(object):
     optimizer_dict = self._optimizer_config.as_dict()
     optimizer_dict['learning_rate'] = lr
 
-    optimizer = OPTIMIZERS_CLS[self._optimizer_type](**optimizer_dict)
-    return optimizer
+    return OPTIMIZERS_CLS[self._optimizer_type](**optimizer_dict)
 

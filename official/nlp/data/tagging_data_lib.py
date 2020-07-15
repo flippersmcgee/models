@@ -57,7 +57,7 @@ def _read_one_file(file_name, label_list):
     if line:
       # The format is: <token>\t<label> for train/dev set and <token> for test.
       items = line.split("\t")
-      assert len(items) == 2 or len(items) == 1
+      assert len(items) in [2, 1]
       token = items[0].strip()
 
       # Assign a dummy label_id for test set
@@ -148,7 +148,7 @@ def _tokenize_example(example, max_length, tokenizer, text_preprocessing=None):
   new_examples = []
   new_example = InputExample(sentence_id=example.sentence_id)
   for i, word in enumerate(example.words):
-    if any([x < 0 for x in example.label_ids]):
+    if any(x < 0 for x in example.label_ids):
       raise ValueError("Unexpected negative label_id: %s" % example.label_ids)
 
     if text_preprocessing:
@@ -335,7 +335,7 @@ def generate_tf_record_from_data_file(processor,
         **common_kwargs)
 
   labels = processor.get_labels()
-  meta_data = token_classification_meta_data(
+  return token_classification_meta_data(
       train_data_size,
       max_seq_length,
       len(labels),
@@ -343,4 +343,3 @@ def generate_tf_record_from_data_file(processor,
       test_data_size,
       label_list=labels,
       processor_type=processor.get_processor_name())
-  return meta_data

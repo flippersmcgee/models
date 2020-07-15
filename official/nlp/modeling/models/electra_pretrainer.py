@@ -170,14 +170,12 @@ class ElectraPretrainer(tf.keras.Model):
         self.discriminator_projection(disc_sequence_output))
     disc_logits = tf.squeeze(disc_logits, axis=-1)
 
-    outputs = {
+    return {
         'lm_outputs': lm_outputs,
         'sentence_outputs': sentence_outputs,
         'disc_logits': disc_logits,
         'disc_label': disc_label,
     }
-
-    return outputs
 
   def _get_fake_data(self, inputs, mlm_logits, duplicate=True):
     """Generate corrupted data for discriminator.
@@ -219,8 +217,7 @@ class ElectraPretrainer(tf.keras.Model):
   @property
   def checkpoint_items(self):
     """Returns a dictionary of items to be additionally checkpointed."""
-    items = dict(encoder=self.discriminator_network)
-    return items
+    return dict(encoder=self.discriminator_network)
 
   def get_config(self):
     return self._config
@@ -329,10 +326,7 @@ def unmask(inputs, duplicate):
 
 
 def get_updated_inputs(inputs, duplicate, **kwargs):
-  if duplicate:
-    new_inputs = copy.copy(inputs)
-  else:
-    new_inputs = inputs
+  new_inputs = copy.copy(inputs) if duplicate else inputs
   for k, v in kwargs.items():
     new_inputs[k] = v
   return new_inputs

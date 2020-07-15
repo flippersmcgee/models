@@ -118,13 +118,18 @@ def main(unused_argv):
 
   model_config = xlnet_config.XLNetConfig(FLAGS)
   run_config = xlnet_config.create_run_config(True, False, FLAGS)
-  input_meta_data = {}
-  input_meta_data["d_model"] = FLAGS.d_model
-  input_meta_data["mem_len"] = FLAGS.mem_len
-  input_meta_data["batch_size_per_core"] = int(FLAGS.train_batch_size /
-                                               strategy.num_replicas_in_sync)
-  input_meta_data["n_layer"] = FLAGS.n_layer
-  input_meta_data["lr_layer_decay_rate"] = FLAGS.lr_layer_decay_rate
+  input_meta_data = {
+      "d_model":
+      FLAGS.d_model,
+      "mem_len":
+      FLAGS.mem_len,
+      "batch_size_per_core":
+      int(FLAGS.train_batch_size / strategy.num_replicas_in_sync),
+      "n_layer":
+      FLAGS.n_layer,
+      "lr_layer_decay_rate":
+      FLAGS.lr_layer_decay_rate,
+  }
   model_fn = functools.partial(get_pretrainxlnet_model, model_config,
                                run_config)
 

@@ -193,9 +193,9 @@ class SpineNet(tf.keras.Model):
     _, _, _, num_filters = inputs.get_shape().as_list()
 
     if block_fn_cand == 'bottleneck':
-      use_projection = not (num_filters == (filters * 4) and strides == 1)
+      use_projection = num_filters != filters * 4 or strides != 1
     else:
-      use_projection = not (num_filters == filters and strides == 1)
+      use_projection = num_filters != filters or strides != 1
 
     x = block_fn(
         filters=filters,

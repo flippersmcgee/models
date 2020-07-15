@@ -75,10 +75,7 @@ class ParamsDict(object):
     self.validate()
 
   def _set(self, k, v):
-    if isinstance(v, dict):
-      self.__dict__[k] = ParamsDict(v)
-    else:
-      self.__dict__[k] = copy.deepcopy(v)
+    self.__dict__[k] = ParamsDict(v) if isinstance(v, dict) else copy.deepcopy(v)
 
   def __setattr__(self, k, v):
     """Sets the value of the existing key.
@@ -197,10 +194,7 @@ class ParamsDict(object):
     params_dict = {}
     for k, v in six.iteritems(self.__dict__):
       if k not in ParamsDict.RESERVED_ATTR:
-        if isinstance(v, ParamsDict):
-          params_dict[k] = v.as_dict()
-        else:
-          params_dict[k] = copy.deepcopy(v)
+        params_dict[k] = v.as_dict() if isinstance(v, ParamsDict) else copy.deepcopy(v)
     return params_dict
 
   def validate(self):
@@ -244,10 +238,7 @@ class ParamsDict(object):
       """Get keys and values indicated by dotted_string."""
       if _CONST_VALUE_RE.match(dotted_string) is not None:
         const_str = dotted_string
-        if const_str == 'None':
-          constant = None
-        else:
-          constant = float(const_str)
+        constant = None if const_str == 'None' else float(const_str)
         return None, constant
       else:
         tokenized_params = dotted_string.split('.')

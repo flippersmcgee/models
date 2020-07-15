@@ -186,11 +186,12 @@ class BertPretrainerV2(tf.keras.Model):
     sequence_output, _ = self.encoder_network(inputs)
 
     self.classification_heads = classification_heads or []
-    if len(set([cls.name for cls in self.classification_heads])) != len(
-        self.classification_heads):
+    if len({cls.name
+            for cls in self.classification_heads}) != len(
+                self.classification_heads):
       raise ValueError('Classification heads should have unique names.')
 
-    outputs = dict()
+    outputs = {}
     self.masked_lm = layers.MaskedLM(
         embedding_table=self.encoder_network.get_embedding_table(),
         activation=mlm_activation,

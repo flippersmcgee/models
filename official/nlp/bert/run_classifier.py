@@ -98,7 +98,7 @@ def get_dataset_fn(input_file_pattern,
     """Returns tf.data.Dataset for distributed BERT pretraining."""
     batch_size = ctx.get_per_replica_batch_size(
         global_batch_size) if ctx else global_batch_size
-    dataset = input_pipeline.create_classifier_dataset(
+    return input_pipeline.create_classifier_dataset(
         tf.io.gfile.glob(input_file_pattern),
         max_seq_length,
         batch_size,
@@ -106,7 +106,6 @@ def get_dataset_fn(input_file_pattern,
         input_pipeline_context=ctx,
         label_type=label_type,
         include_sample_weights=include_sample_weights)
-    return dataset
 
   return _dataset_fn
 

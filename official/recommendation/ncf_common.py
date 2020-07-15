@@ -323,5 +323,4 @@ def convert_to_softmax_logits(logits):
   Returns:
     Softmax with the first column of zeros is equivalent to sigmoid.
   """
-  softmax_logits = tf.concat([logits * 0, logits], axis=1)
-  return softmax_logits
+  return tf.concat([logits * 0, logits], axis=1)

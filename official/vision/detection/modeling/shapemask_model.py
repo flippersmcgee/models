@@ -199,7 +199,7 @@ class ShapeMaskModel(base_model.Model):
       l2_regularization_loss = self.weight_decay_loss(trainable_variables)
       total_loss = model_loss + l2_regularization_loss
 
-      shapemask_losses = {
+      return {
           'total_loss': total_loss,
           'loss': total_loss,
           'retinanet_cls_loss': cls_loss,
@@ -210,7 +210,6 @@ class ShapeMaskModel(base_model.Model):
           'shapemask_fine_mask_loss': fine_mask_loss,
           'model_loss': model_loss,
       }
-      return shapemask_losses
 
     return _total_loss_fn
 

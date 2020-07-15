@@ -52,11 +52,11 @@ class BenchmarkTimerCallback(tf.keras.callbacks.Callback):
     self.batch_stop_times[batch] = time.time()
 
   def get_examples_per_sec(self, batch_size, num_batches_to_skip=1):
-    batch_durations = []
-    for batch in self.batch_start_times:
-      if batch in self.batch_stop_times and batch >= num_batches_to_skip:
-        batch_durations.append(self.batch_stop_times[batch] -
-                               self.batch_start_times[batch])
+    batch_durations = [
+        self.batch_stop_times[batch] - self.batch_start_times[batch]
+        for batch in self.batch_start_times
+        if batch in self.batch_stop_times and batch >= num_batches_to_skip
+    ]
     return batch_size / np.mean(batch_durations)
 
   def get_startup_time(self, program_start_time):

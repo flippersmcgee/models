@@ -38,9 +38,9 @@ def register(registered_collection, reg_key):
   """
   def decorator(fn_or_cls):
     """Put fn_or_cls in the dictionary."""
+    collection = registered_collection
     if isinstance(reg_key, str):
       hierarchy = reg_key.split("/")
-      collection = registered_collection
       for h_idx, entry_name in enumerate(hierarchy[:-1]):
         if entry_name not in collection:
           collection[entry_name] = {}
@@ -51,7 +51,6 @@ def register(registered_collection, reg_key):
               "a function or class.".format(entry_name, h_idx))
       leaf_reg_key = hierarchy[-1]
     else:
-      collection = registered_collection
       leaf_reg_key = reg_key
 
     if leaf_reg_key in collection:

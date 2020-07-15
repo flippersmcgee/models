@@ -90,12 +90,12 @@ class ArgMaxMatcher(matcher.Matcher):
         raise ValueError('unmatched_threshold needs to be smaller or equal'
                          'to matched_threshold')
       self._unmatched_threshold = unmatched_threshold
-    if not negatives_lower_than_unmatched:
-      if self._unmatched_threshold == self._matched_threshold:
-        raise ValueError('When negatives are in between matched and '
-                         'unmatched thresholds, these cannot be of equal '
-                         'value. matched: %s, unmatched: %s',
-                         self._matched_threshold, self._unmatched_threshold)
+    if (not negatives_lower_than_unmatched
+        and self._unmatched_threshold == self._matched_threshold):
+      raise ValueError('When negatives are in between matched and '
+                       'unmatched thresholds, these cannot be of equal '
+                       'value. matched: %s, unmatched: %s',
+                       self._matched_threshold, self._unmatched_threshold)
     self._force_match_for_each_row = force_match_for_each_row
     self._negatives_lower_than_unmatched = negatives_lower_than_unmatched
 
@@ -169,9 +169,8 @@ class ArgMaxMatcher(matcher.Matcher):
         force_match_column_mask = tf.cast(
             tf.reduce_max(input_tensor=force_match_column_indicators, axis=0),
             tf.bool)
-        final_matches = tf.where(force_match_column_mask, force_match_row_ids,
+        return tf.where(force_match_column_mask, force_match_row_ids,
                                  matches)
-        return final_matches
       else:
         return matches
 

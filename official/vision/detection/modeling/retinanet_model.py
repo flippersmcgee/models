@@ -85,11 +85,10 @@ class RetinanetModel(base_model.Model):
         cls_outputs[level] = tf.cast(cls_outputs[level], tf.float32)
         box_outputs[level] = tf.cast(box_outputs[level], tf.float32)
 
-    model_outputs = {
+    return {
         'cls_outputs': cls_outputs,
         'box_outputs': box_outputs,
     }
-    return model_outputs
 
   def build_loss_fn(self):
     if self._keras_model is None:

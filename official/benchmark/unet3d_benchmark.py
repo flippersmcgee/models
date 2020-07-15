@@ -95,7 +95,7 @@ class Unet3DAccuracyBenchmark(keras_benchmark.KerasBenchmark):
     strategy = unet_training_lib.create_distribution_strategy(params)
 
     input_dtype = params.dtype
-    if input_dtype == 'float16' or input_dtype == 'bfloat16':
+    if input_dtype in ['float16', 'bfloat16']:
       policy = tf.keras.mixed_precision.experimental.Policy(
           'mixed_bfloat16' if input_dtype == 'bfloat16' else 'mixed_float16')
       tf.keras.mixed_precision.experimental.set_policy(policy)

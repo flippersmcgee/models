@@ -109,8 +109,7 @@ class QuestionAnsweringTask(base_task.Task):
         tf.cast(end_logits, dtype=tf.float32),
         from_logits=True)
 
-    loss = (tf.reduce_mean(start_loss) + tf.reduce_mean(end_loss)) / 2
-    return loss
+    return (tf.reduce_mean(start_loss) + tf.reduce_mean(end_loss)) / 2
 
   def _preprocess_eval_data(self, params):
     eval_examples = self.squad_lib.read_squad_examples(
@@ -219,13 +218,12 @@ class QuestionAnsweringTask(base_task.Task):
     unique_ids = features.pop('unique_ids')
     model_outputs = self.inference_step(features, model)
     start_logits, end_logits = model_outputs
-    logs = {
+    return {
         self.loss: 0.0,  # TODO(lehou): compute the real validation loss.
         'unique_ids': unique_ids,
         'start_logits': start_logits,
         'end_logits': end_logits,
     }
-    return logs
 
   raw_aggregated_result = collections.namedtuple(
       'RawResult', ['unique_id', 'start_logits', 'end_logits'])

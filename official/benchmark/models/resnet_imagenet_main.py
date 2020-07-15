@@ -145,9 +145,10 @@ def run(flags_obj):
       batch_size=flags_obj.batch_size,
       epoch_size=imagenet_preprocessing.NUM_IMAGES['train'],
       warmup_epochs=common.LR_SCHEDULE[0][1],
-      boundaries=list(p[1] for p in common.LR_SCHEDULE[1:]),
-      multipliers=list(p[0] for p in common.LR_SCHEDULE),
-      compute_lr_on_cpu=True)
+      boundaries=[p[1] for p in common.LR_SCHEDULE[1:]],
+      multipliers=[p[0] for p in common.LR_SCHEDULE],
+      compute_lr_on_cpu=True,
+  )
   steps_per_epoch = (
       imagenet_preprocessing.NUM_IMAGES['train'] // flags_obj.batch_size)
 
@@ -275,8 +276,7 @@ def run(flags_obj):
   if not strategy and flags_obj.explicit_gpu_placement:
     no_dist_strat_device.__exit__()
 
-  stats = common.build_stats(history, eval_output, callbacks)
-  return stats
+  return common.build_stats(history, eval_output, callbacks)
 
 
 def define_imagenet_keras_flags():

@@ -75,7 +75,7 @@ class KerasImagenetTest(tf.test.TestCase, parameterized.TestCase):
         "-data_format", "channels_last",
         "-enable_checkpoint_and_export", "1",
     ]
-    extra_flags = extra_flags + self._extra_flags_dict[flags_key]
+    extra_flags += self._extra_flags_dict[flags_key]
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,
@@ -92,7 +92,7 @@ class KerasImagenetTest(tf.test.TestCase, parameterized.TestCase):
         "-data_format", "channels_last",
         "-dtype", "bf16",
     ]
-    extra_flags = extra_flags + self._extra_flags_dict[flags_key]
+    extra_flags += self._extra_flags_dict[flags_key]
 
     integration.run_synthetic(
         main=resnet_imagenet_main.run,

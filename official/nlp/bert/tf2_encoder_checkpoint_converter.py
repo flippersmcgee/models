@@ -52,7 +52,7 @@ def _create_bert_model(cfg):
   Returns:
     A TransformerEncoder netowork.
   """
-  bert_encoder = networks.TransformerEncoder(
+  return networks.TransformerEncoder(
       vocab_size=cfg.vocab_size,
       hidden_size=cfg.hidden_size,
       num_layers=cfg.num_hidden_layers,
@@ -66,8 +66,6 @@ def _create_bert_model(cfg):
       initializer=tf.keras.initializers.TruncatedNormal(
           stddev=cfg.initializer_range),
       embedding_width=cfg.embedding_size)
-
-  return bert_encoder
 
 
 def convert_checkpoint(bert_config, output_path, v1_checkpoint):

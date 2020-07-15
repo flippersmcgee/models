@@ -107,8 +107,7 @@ def squad_loss_fn(start_positions,
   end_loss = tf.keras.losses.sparse_categorical_crossentropy(
       end_positions, end_logits, from_logits=True)
 
-  total_loss = (tf.reduce_mean(start_loss) + tf.reduce_mean(end_loss)) / 2
-  return total_loss
+  return (tf.reduce_mean(start_loss) + tf.reduce_mean(end_loss)) / 2
 
 
 def get_loss_fn():
@@ -152,13 +151,12 @@ def get_dataset_fn(input_file_pattern, max_seq_length, global_batch_size,
     """Returns tf.data.Dataset for distributed BERT pretraining."""
     batch_size = ctx.get_per_replica_batch_size(
         global_batch_size) if ctx else global_batch_size
-    dataset = input_pipeline.create_squad_dataset(
+    return input_pipeline.create_squad_dataset(
         input_file_pattern,
         max_seq_length,
         batch_size,
         is_training=is_training,
         input_pipeline_context=ctx)
-    return dataset
 
   return _dataset_fn
 

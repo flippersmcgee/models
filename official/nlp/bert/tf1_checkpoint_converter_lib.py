@@ -76,10 +76,7 @@ def _bert_name_replacement(var_name, name_replacements):
 
 def _has_exclude_patterns(name, exclude_patterns):
   """Checks if a string contains substrings that match patterns to exclude."""
-  for p in exclude_patterns:
-    if p in name:
-      return True
-  return False
+  return any(p in name for p in exclude_patterns)
 
 
 def _get_permutation(name, permutations):

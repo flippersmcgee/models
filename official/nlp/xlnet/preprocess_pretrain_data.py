@@ -67,28 +67,17 @@ def format_filename(prefix, bsz_per_host, seq_len, bi_data, suffix,
                     mask_alpha=5, mask_beta=1, reuse_len=None, uncased=False,
                     fixed_num_predict=None):
   """docs."""
-  if reuse_len is None:
-    reuse_len_str = ""
-  else:
-    reuse_len_str = "reuse-{}.".format(reuse_len)
-  if not uncased:
-    uncased_str = ""
-  else:
-    uncased_str = "uncased."
-  if bi_data:
-    bi_data_str = "bi"
-  else:
-    bi_data_str = "uni"
+  reuse_len_str = "" if reuse_len is None else "reuse-{}.".format(reuse_len)
+  uncased_str = "" if not uncased else "uncased."
+  bi_data_str = "bi" if bi_data else "uni"
   if fixed_num_predict is not None:
     fnp_str = "fnp-{}.".format(fixed_num_predict)
   else:
     fnp_str = ""
 
-  file_name = "{}.bsz-{}.seqlen-{}.{}{}{}.alpha-{}.beta-{}.{}{}".format(
+  return "{}.bsz-{}.seqlen-{}.{}{}{}.alpha-{}.beta-{}.{}{}".format(
       prefix, bsz_per_host, seq_len, reuse_len_str, uncased_str, bi_data_str,
       mask_alpha, mask_beta, fnp_str, suffix)
-
-  return file_name
 
 
 def _create_data(idx, input_paths):
@@ -179,12 +168,10 @@ def _create_data(idx, input_paths):
   filenames.append(file_name)
   num_batch += cur_num_batch
 
-  record_info = {
+  return {
       "filenames": filenames,
       "num_batch": num_batch
   }
-
-  return record_info
 
 
 def create_data(_):
@@ -287,13 +274,9 @@ def _split_a_and_b(data, sent_ids, begin_idx, tot_len, extend_target=False):
     end_idx += 1
 
   a_begin = begin_idx
-  if len(cut_points) == 0 or random.random() < 0.5:
+  if not cut_points or random.random() < 0.5:
     label = 0
-    if len(cut_points) == 0:
-      a_end = end_idx
-    else:
-      a_end = random.choice(cut_points)
-
+    a_end = end_idx if not cut_points else random.choice(cut_points)
     b_len = max(1, tot_len - (a_end - a_begin))
     # (zihangd): `data_len - 1` to account for extend_target
     b_begin = random.randint(0, data_len - 1 - b_len)
@@ -337,11 +320,8 @@ def _split_a_and_b(data, sent_ids, begin_idx, tot_len, extend_target=False):
 
 def _is_start_piece(piece):
   special_pieces = set(list('!"#$%&\"()*+,-./:;?@[\\]^_`{|}~'))
-  if (piece.startswith("▁") or piece.startswith("<")
-      or piece in special_pieces):
-    return True
-  else:
-    return False
+  return bool((piece.startswith("▁") or piece.startswith("<")
+      or piece in special_pieces))
 
 
 def _sample_mask(sp, seg, reverse=False, max_gram=5, goal_num_predict=None):
@@ -483,7 +463,7 @@ def create_tfrecords(save_dir, basename, data, bsz_per_host, seq_len,
   bsz_per_core = bsz_per_host // num_core
 
   if bi_data:
-    assert bsz_per_host % (2 * FLAGS.num_core_per_host) == 0
+    assert bsz_per_host % (2 * num_core) == 0
     fwd_data, fwd_sent_ids = batchify(data, bsz_per_host // 2, sent_ids)
 
     fwd_data = fwd_data.reshape(num_core, 1, bsz_per_core // 2, -1)
@@ -723,7 +703,7 @@ def _local_perm(inputs, targets, is_masked, perm_size, seq_len):
   # construct inputs_q
   inputs_q = target_mask
 
-  return perm_mask, new_targets, target_mask, inputs_k, inputs_q
+  return perm_mask, new_targets, inputs_q, inputs_k, inputs_q
 
 
 def get_dataset(params, num_hosts, num_core_per_host, split, file_names,
@@ -935,7 +915,7 @@ def get_input_fn(
     """docs."""
     assert params["batch_size"] * num_core_per_host == bsz_per_host
 
-    dataset = get_dataset(
+    return get_dataset(
         params=params,
         num_hosts=num_hosts,
         num_core_per_host=num_core_per_host,
@@ -949,8 +929,6 @@ def get_input_fn(
         mask_beta=mask_beta,
         use_bfloat16=use_bfloat16,
         num_predict=num_predict)
-
-    return dataset
 
   return input_fn, record_info
 
