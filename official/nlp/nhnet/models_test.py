@@ -99,12 +99,12 @@ class Bert2BertTest(tf.test.TestCase, parameterized.TestCase):
 
   @combinations.generate(all_strategy_combinations())
   def test_bert2bert_train_forward(self, distribution):
-    seq_length = 10
     # Defines the model inside distribution strategy scope.
     with distribution.scope():
       # Forward path.
       batch_size = 2
       batches = 4
+      seq_length = 10
       fake_ids = np.zeros((batch_size * batches, seq_length), dtype=np.int32)
       fake_inputs = {
           "input_ids": fake_ids,
@@ -258,13 +258,13 @@ class NHNetTest(tf.test.TestCase, parameterized.TestCase):
 
   @combinations.generate(all_strategy_combinations())
   def test_nhnet_train_forward(self, distribution):
-    seq_length = 10
     # Defines the model inside distribution strategy scope.
     with distribution.scope():
       # Forward path.
       batch_size = 2
       num_docs = 2
       batches = 4
+      seq_length = 10
       fake_ids = np.zeros((batch_size * batches, num_docs, seq_length),
                           dtype=np.int32)
       fake_inputs = {

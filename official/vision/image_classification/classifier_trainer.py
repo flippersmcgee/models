@@ -134,8 +134,7 @@ def get_loss_scale(params: base_configs.ExperimentConfig,
     return loss_scale
   elif loss_scale is not None:
     return float(loss_scale)
-  elif (params.train_dataset.dtype == 'float32' or
-        params.train_dataset.dtype == 'bfloat16'):
+  elif params.train_dataset.dtype in ['float32', 'bfloat16']:
     return 1.
   else:
     assert params.train_dataset.dtype == 'float16'

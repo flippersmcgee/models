@@ -304,14 +304,14 @@ def generate_tagging_dataset():
   if task_name not in processors:
     raise ValueError("Task not found: %s" % task_name)
 
-  if FLAGS.tokenizer_impl == "word_piece":
-    tokenizer = tokenization.FullTokenizer(
-        vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)
-    processor_text_fn = tokenization.convert_to_unicode
-  elif FLAGS.tokenizer_impl == "sentence_piece":
+  if FLAGS.tokenizer_impl == "sentence_piece":
     tokenizer = tokenization.FullSentencePieceTokenizer(FLAGS.sp_model_file)
     processor_text_fn = functools.partial(
         tokenization.preprocess_text, lower=FLAGS.do_lower_case)
+  elif FLAGS.tokenizer_impl == "word_piece":
+    tokenizer = tokenization.FullTokenizer(
+        vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)
+    processor_text_fn = tokenization.convert_to_unicode
   else:
     raise ValueError("Unsupported tokenizer_impl: %s" % FLAGS.tokenizer_impl)
 

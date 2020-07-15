@@ -446,9 +446,8 @@ def draw_bounding_boxes_on_image_tensors(images,
     if original_image_spatial_shape is not None:
       image_and_detections[2] = _resize_original_image(image, original_shape)
 
-    image_with_boxes = tf.compat.v1.py_func(visualize_boxes_fn,
+    return tf.compat.v1.py_func(visualize_boxes_fn,
                                             image_and_detections[2:], tf.uint8)
-    return image_with_boxes
 
   images = tf.map_fn(draw_boxes, elems, dtype=tf.uint8, back_prop=False)
   return images
@@ -495,8 +494,8 @@ def draw_keypoints_on_image(image,
   keypoints_x = [k[1] for k in keypoints]
   keypoints_y = [k[0] for k in keypoints]
   if use_normalized_coordinates:
-    keypoints_x = tuple([im_width * x for x in keypoints_x])
-    keypoints_y = tuple([im_height * y for y in keypoints_y])
+    keypoints_x = tuple(im_width * x for x in keypoints_x)
+    keypoints_y = tuple(im_height * y for y in keypoints_y)
   for keypoint_x, keypoint_y in zip(keypoints_x, keypoints_y):
     draw.ellipse([(keypoint_x - radius, keypoint_y - radius),
                   (keypoint_x + radius, keypoint_y + radius)],
@@ -615,13 +614,12 @@ def visualize_boxes_and_labels_on_image_array(
         box_to_color_map[box] = groundtruth_box_visualization_color
       else:
         display_str = ''
-        if not skip_labels:
-          if not agnostic_mode:
-            if classes[i] in category_index.keys():
-              class_name = category_index[classes[i]]['name']
-            else:
-              class_name = 'N/A'
-            display_str = str(class_name)
+        if not skip_labels and not agnostic_mode:
+          if classes[i] in category_index.keys():
+            class_name = category_index[classes[i]]['name']
+          else:
+            class_name = 'N/A'
+          display_str = str(class_name)
         if not skip_scores:
           if not display_str:
             display_str = '{}%'.format(int(100*scores[i]))
@@ -695,9 +693,8 @@ def add_cdf_image_summary(values, name):
     ax.set_xlabel('fraction of examples')
     fig.canvas.draw()
     width, height = fig.get_size_inches() * fig.get_dpi()
-    image = np.fromstring(fig.canvas.tostring_rgb(), dtype='uint8').reshape(
+    return np.fromstring(fig.canvas.tostring_rgb(), dtype='uint8').reshape(
         1, int(height), int(width), 3)
-    return image
 
   cdf_plot = tf.compat.v1.py_func(cdf_plot, [values], tf.uint8)
   tf.compat.v1.summary.image(name, cdf_plot)
@@ -724,10 +721,9 @@ def add_hist_image_summary(values, bins, name):
     ax.set_xlabel('value')
     fig.canvas.draw()
     width, height = fig.get_size_inches() * fig.get_dpi()
-    image = np.fromstring(
+    return np.fromstring(
         fig.canvas.tostring_rgb(), dtype='uint8').reshape(
             1, int(height), int(width), 3)
-    return image
 
   hist_plot = tf.compat.v1.py_func(hist_plot, [values, bins], tf.uint8)
   tf.compat.v1.summary.image(name, hist_plot)

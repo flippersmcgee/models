@@ -171,9 +171,8 @@ class Config(params_dict.ParamsDict):
       self.__dict__[k] = self._import_config(v, subconfig_type)
 
   def __setattr__(self, k, v):
-    if k not in self.RESERVED_ATTR:
-      if getattr(self, '_locked', False):
-        raise ValueError('The Config has been locked. ' 'No change is allowed.')
+    if k not in self.RESERVED_ATTR and getattr(self, '_locked', False):
+      raise ValueError('The Config has been locked. ' 'No change is allowed.')
     self._set(k, v)
 
   def _override(self, override_dict, is_strict=True):

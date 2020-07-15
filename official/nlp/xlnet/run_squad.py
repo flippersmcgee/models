@@ -205,13 +205,12 @@ def run_evaluation(strategy, test_input_fn, eval_examples, eval_features,
 
 
 def get_qaxlnet_model(model_config, run_config, start_n_top, end_n_top):
-  model = modeling.QAXLNetModel(
+  return modeling.QAXLNetModel(
       model_config,
       run_config,
       start_n_top=start_n_top,
       end_n_top=end_n_top,
       name="model")
-  return model
 
 
 def main(unused_argv):
@@ -248,17 +247,26 @@ def main(unused_argv):
       adam_epsilon=FLAGS.adam_epsilon)
   model_config = xlnet_config.XLNetConfig(FLAGS)
   run_config = xlnet_config.create_run_config(True, False, FLAGS)
-  input_meta_data = {}
-  input_meta_data["start_n_top"] = FLAGS.start_n_top
-  input_meta_data["end_n_top"] = FLAGS.end_n_top
-  input_meta_data["lr_layer_decay_rate"] = FLAGS.lr_layer_decay_rate
-  input_meta_data["predict_dir"] = FLAGS.predict_dir
-  input_meta_data["n_best_size"] = FLAGS.n_best_size
-  input_meta_data["max_answer_length"] = FLAGS.max_answer_length
-  input_meta_data["test_batch_size"] = FLAGS.test_batch_size
-  input_meta_data["batch_size_per_core"] = int(FLAGS.train_batch_size /
-                                               strategy.num_replicas_in_sync)
-  input_meta_data["mem_len"] = FLAGS.mem_len
+  input_meta_data = {
+      "start_n_top":
+      FLAGS.start_n_top,
+      "end_n_top":
+      FLAGS.end_n_top,
+      "lr_layer_decay_rate":
+      FLAGS.lr_layer_decay_rate,
+      "predict_dir":
+      FLAGS.predict_dir,
+      "n_best_size":
+      FLAGS.n_best_size,
+      "max_answer_length":
+      FLAGS.max_answer_length,
+      "test_batch_size":
+      FLAGS.test_batch_size,
+      "batch_size_per_core":
+      int(FLAGS.train_batch_size / strategy.num_replicas_in_sync),
+      "mem_len":
+      FLAGS.mem_len,
+  }
   model_fn = functools.partial(get_qaxlnet_model, model_config, run_config,
                                FLAGS.start_n_top, FLAGS.end_n_top)
   eval_examples = squad_utils.read_squad_examples(

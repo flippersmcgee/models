@@ -81,7 +81,7 @@ def instantiate_encoder_from_cfg(
 
   if encoder_cls.__name__ != "TransformerEncoder":
     raise ValueError("Unknown encoder network class. %s" % str(encoder_cls))
-  encoder_network = encoder_cls(
+  return encoder_cls(
       vocab_size=config.vocab_size,
       hidden_size=config.hidden_size,
       num_layers=config.num_layers,
@@ -97,4 +97,3 @@ def instantiate_encoder_from_cfg(
           stddev=config.initializer_range),
       embedding_width=config.embedding_size,
       embedding_layer=embedding_layer)
-  return encoder_network

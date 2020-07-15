@@ -79,8 +79,7 @@ def _compute_f1(a_gold, a_pred):
     return 0
   precision = 1.0 * num_same / len(pred_toks)
   recall = 1.0 * num_same / len(gold_toks)
-  f1 = (2 * precision * recall) / (precision + recall)
-  return f1
+  return (2 * precision * recall) / (precision + recall)
 
 
 def _get_raw_scores(dataset, predictions):
@@ -111,10 +110,7 @@ def _apply_no_ans_threshold(
   new_scores = {}
   for qid, s in scores.items():
     pred_na = na_probs[qid] > na_prob_thresh
-    if pred_na:
-      new_scores[qid] = float(not qid_to_has_ans[qid])
-    else:
-      new_scores[qid] = s
+    new_scores[qid] = float(not qid_to_has_ans[qid]) if pred_na else s
   return new_scores
 
 
@@ -193,10 +189,7 @@ def _find_best_thresh(predictions, scores, na_probs, qid_to_has_ans):
     if qid_to_has_ans[qid]:
       diff = scores[qid]
     else:
-      if predictions[qid]:
-        diff = -1
-      else:
-        diff = 0
+      diff = -1 if predictions[qid] else 0
     cur_score += diff
     if cur_score > best_score:
       best_score = cur_score

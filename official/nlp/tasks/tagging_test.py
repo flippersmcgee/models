@@ -31,8 +31,7 @@ def _create_fake_dataset(output_path, seq_length, num_labels, num_examples):
   writer = tf.io.TFRecordWriter(output_path)
 
   def create_int_feature(values):
-    f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
-    return f
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
 
   for i in range(num_examples):
     features = {}

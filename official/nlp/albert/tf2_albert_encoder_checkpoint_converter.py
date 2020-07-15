@@ -76,7 +76,7 @@ def _create_albert_model(cfg):
   Returns:
     A keras model.
   """
-  albert_encoder = networks.AlbertTransformerEncoder(
+  return networks.AlbertTransformerEncoder(
       vocab_size=cfg.vocab_size,
       hidden_size=cfg.hidden_size,
       embedding_width=cfg.embedding_size,
@@ -90,7 +90,6 @@ def _create_albert_model(cfg):
       type_vocab_size=cfg.type_vocab_size,
       initializer=tf.keras.initializers.TruncatedNormal(
           stddev=cfg.initializer_range))
-  return albert_encoder
 
 
 def convert_checkpoint(bert_config, output_path, v1_checkpoint):

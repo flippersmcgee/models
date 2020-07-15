@@ -45,8 +45,7 @@ def rouge_l_fscore(logits, labels):
     rouge_l_fscore: approx rouge-l f1 score.
   """
   predictions = np.argmax(logits, axis=-1)
-  rouge_l_f_score = metrics.rouge_l_sentence_level(predictions, labels)
-  return rouge_l_f_score
+  return metrics.rouge_l_sentence_level(predictions, labels)
 
 
 def rouge_2_fscore(logits, labels):
@@ -63,8 +62,7 @@ def rouge_2_fscore(logits, labels):
     rouge2_fscore: approx rouge-2 f1 score.
   """
   predictions = np.argmax(logits, axis=-1)
-  rouge_2_f_score = metrics.rouge_n(predictions, labels)
-  return rouge_2_f_score
+  return metrics.rouge_n(predictions, labels)
 
 
 def bleu_score(logits, labels):
@@ -82,8 +80,7 @@ def bleu_score(logits, labels):
     bleu: int, approx bleu score
   """
   predictions = np.argmax(logits, axis=-1)
-  bleu = metrics.compute_bleu(labels, predictions)
-  return bleu
+  return metrics.compute_bleu(labels, predictions)
 
 
 def continuous_eval(strategy,

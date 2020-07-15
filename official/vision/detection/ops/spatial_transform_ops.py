@@ -524,13 +524,11 @@ def single_level_feature_crop(features, level_boxes, detection_prior_levels,
 
   features_r2 = tf.reshape(features,
                            [-1, num_downsample_channels])
-  crop_features = tf.reshape(
+  return tf.reshape(
       tf.gather(features_r2, indices),
       [batch_size * num_of_instances,
        mask_crop_size, mask_crop_size,
        num_downsample_channels])
-
-  return crop_features
 
 
 def crop_mask_in_target_box(masks,

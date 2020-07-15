@@ -124,10 +124,10 @@ class RpnHead(tf.keras.layers.Layer):
 
   def __call__(self, features, is_training=None):
 
-    scores_outputs = {}
-    box_outputs = {}
-
     with backend.get_graph().as_default(), tf.name_scope('rpn_head'):
+      scores_outputs = {}
+      box_outputs = {}
+
       for level in range(self._min_level, self._max_level + 1):
         scores_output, box_output = self._shared_rpn_heads(
             features[level], self._anchors_per_location, level, is_training)
@@ -726,8 +726,7 @@ class ShapemaskPriorHead(object):
     else:
       logits = logits[:, :, 0, :]
 
-    distribution = tf.nn.softmax(logits, name='shape_prior_weights')
-    return distribution
+    return tf.nn.softmax(logits, name='shape_prior_weights')
 
 
 class ShapemaskCoarsemaskHead(object):

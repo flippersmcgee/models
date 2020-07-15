@@ -178,10 +178,10 @@ class COCOEvaluator(object):
     # Cleans up the internal variables in order for a fresh eval next time.
     self.reset()
 
-    metrics_dict = {}
-    for i, name in enumerate(self._metric_names):
-      metrics_dict[name] = metrics[i].astype(np.float32)
-    return metrics_dict
+    return {
+        name: metrics[i].astype(np.float32)
+        for i, name in enumerate(self._metric_names)
+    }
 
   def _process_predictions(self, predictions):
     image_scale = np.tile(predictions['image_info'][:, 2:3, :], (1, 1, 2))
@@ -322,11 +322,10 @@ class ShapeMaskCOCOEvaluator(COCOEvaluator):
                                self._eval_categories)
         # Gather the valid evaluation of the eval categories.
         if np.any(val_catg_idx):
-          mean_val_metrics = []
-          for mid in range(len(self._metric_names) // 2):
-            mean_val_metrics.append(
-                np.nanmean(mask_coco_metrics[mid][val_catg_idx]))
-
+          mean_val_metrics = [
+              np.nanmean(mask_coco_metrics[mid][val_catg_idx])
+              for mid in range(len(self._metric_names) // 2)
+          ]
           mean_val_metrics = np.array(mean_val_metrics)
         else:
           mean_val_metrics = np.zeros(len(self._metric_names) // 2)
@@ -337,7 +336,7 @@ class ShapeMaskCOCOEvaluator(COCOEvaluator):
     # Cleans up the internal variables in order for a fresh eval next time.
     self.reset()
 
-    metrics_dict = {}
-    for i, name in enumerate(self._metric_names):
-      metrics_dict[name] = metrics[i].astype(np.float32)
-    return metrics_dict
+    return {
+        name: metrics[i].astype(np.float32)
+        for i, name in enumerate(self._metric_names)
+    }

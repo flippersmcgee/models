@@ -48,9 +48,8 @@ def get_classificationxlnet_model(model_config,
                                   run_config,
                                   n_class,
                                   summary_type="last"):
-  model = modeling.ClassificationXLNetModel(
+  return modeling.ClassificationXLNetModel(
       model_config, run_config, n_class, summary_type, name="model")
-  return model
 
 
 def run_evaluation(strategy,
@@ -127,9 +126,8 @@ def run_evaluation(strategy,
 
 
 def get_metric_fn():
-  train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy(
+  return tf.keras.metrics.SparseCategoricalAccuracy(
       "acc", dtype=tf.float32)
-  return train_acc_metric
 
 
 def main(unused_argv):
@@ -166,15 +164,20 @@ def main(unused_argv):
   run_config = xlnet_config.create_run_config(True, False, FLAGS)
   model_fn = functools.partial(get_classificationxlnet_model, model_config,
                                run_config, FLAGS.n_class, FLAGS.summary_type)
-  input_meta_data = {}
-  input_meta_data["d_model"] = FLAGS.d_model
-  input_meta_data["mem_len"] = FLAGS.mem_len
-  input_meta_data["batch_size_per_core"] = int(FLAGS.train_batch_size /
-                                               strategy.num_replicas_in_sync)
-  input_meta_data["n_layer"] = FLAGS.n_layer
-  input_meta_data["lr_layer_decay_rate"] = FLAGS.lr_layer_decay_rate
-  input_meta_data["n_class"] = FLAGS.n_class
-
+  input_meta_data = {
+      "d_model":
+      FLAGS.d_model,
+      "mem_len":
+      FLAGS.mem_len,
+      "batch_size_per_core":
+      int(FLAGS.train_batch_size / strategy.num_replicas_in_sync),
+      "n_layer":
+      FLAGS.n_layer,
+      "lr_layer_decay_rate":
+      FLAGS.lr_layer_decay_rate,
+      "n_class":
+      FLAGS.n_class,
+  }
   training_utils.train(
       strategy=strategy,
       model_fn=model_fn,

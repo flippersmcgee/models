@@ -252,10 +252,7 @@ class MrpcProcessor(DataProcessor):
       guid = "%s-%s" % (set_type, i)
       text_a = self.process_text_fn(line[3])
       text_b = self.process_text_fn(line[4])
-      if set_type == "test":
-        label = "0"
-      else:
-        label = self.process_text_fn(line[0])
+      label = "0" if set_type == "test" else self.process_text_fn(line[0])
       examples.append(
           InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
     return examples
@@ -281,10 +278,7 @@ class PawsxProcessor(DataProcessor):
     """See base class."""
     lines = []
     for language in self.languages:
-      if language == "en":
-        train_tsv = "train.tsv"
-      else:
-        train_tsv = "translated_train.tsv"
+      train_tsv = "train.tsv" if language == "en" else "translated_train.tsv"
       # Skips the header.
       lines.extend(
           self._read_tsv(os.path.join(data_dir, language, train_tsv))[1:])
@@ -374,13 +368,11 @@ class QnliProcessor(DataProcessor):
       if i == 0:
         continue
       guid = "%s-%s" % (set_type, 1)
+      text_a = tokenization.convert_to_unicode(line[1])
+      text_b = tokenization.convert_to_unicode(line[2])
       if set_type == "test":
-        text_a = tokenization.convert_to_unicode(line[1])
-        text_b = tokenization.convert_to_unicode(line[2])
         label = "entailment"
       else:
-        text_a = tokenization.convert_to_unicode(line[1])
-        text_b = tokenization.convert_to_unicode(line[2])
         label = tokenization.convert_to_unicode(line[-1])
       examples.append(
           InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
@@ -739,10 +731,7 @@ class WnliProcessor(DataProcessor):
       guid = "%s-%s" % (set_type, i)
       text_a = tokenization.convert_to_unicode(line[1])
       text_b = tokenization.convert_to_unicode(line[2])
-      if set_type == "test":
-        label = "0"
-      else:
-        label = tokenization.convert_to_unicode(line[3])
+      label = "0" if set_type == "test" else tokenization.convert_to_unicode(line[3])
       examples.append(
           InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
     return examples
@@ -1029,7 +1018,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
     logging.info("weight: %s", example.weight)
     logging.info("int_iden: %s", str(example.int_iden))
 
-  feature = InputFeatures(
+  return InputFeatures(
       input_ids=input_ids,
       input_mask=input_mask,
       segment_ids=segment_ids,
@@ -1037,8 +1026,6 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
       is_real_example=True,
       weight=example.weight,
       int_iden=example.int_iden)
-
-  return feature
 
 
 def file_based_convert_examples_to_features(examples,
@@ -1060,12 +1047,10 @@ def file_based_convert_examples_to_features(examples,
                                      max_seq_length, tokenizer)
 
     def create_int_feature(values):
-      f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
-      return f
+      return tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
 
     def create_float_feature(values):
-      f = tf.train.Feature(float_list=tf.train.FloatList(value=list(values)))
-      return f
+      return tf.train.Feature(float_list=tf.train.FloatList(value=list(values)))
 
     features = collections.OrderedDict()
     features["input_ids"] = create_int_feature(feature.input_ids)

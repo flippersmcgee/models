@@ -85,10 +85,9 @@ def metrics_as_dict(metric):
 def metric_results(metric):
   """Collects results from the given metric(s)."""
   metrics = metrics_as_dict(metric)
-  metric_result = {
+  return {
       name: m.result().numpy().astype(float) for name, m in metrics.items()
   }
-  return metric_result
 
 
 def reset_states(metric):

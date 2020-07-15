@@ -66,7 +66,7 @@ def get_pretrain_dataset_fn(input_file_pattern, seq_length,
     """Returns tf.data.Dataset for distributed BERT pretraining."""
     input_patterns = input_file_pattern.split(',')
     batch_size = ctx.get_per_replica_batch_size(global_batch_size)
-    train_dataset = input_pipeline.create_pretrain_dataset(
+    return input_pipeline.create_pretrain_dataset(
         input_patterns,
         seq_length,
         max_predictions_per_seq,
@@ -74,7 +74,6 @@ def get_pretrain_dataset_fn(input_file_pattern, seq_length,
         is_training=True,
         input_pipeline_context=ctx,
         use_next_sentence_label=use_next_sentence_label)
-    return train_dataset
 
   return _dataset_fn
 

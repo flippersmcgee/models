@@ -72,10 +72,9 @@ class LinearWarmup(tf.keras.optimizers.schedules.LearningRateSchedule):
     else:
       after_warmup_lr = tf.cast(self._after_warmup_lr_sched, dtype=tf.float32)
 
-    lr = tf.cond(global_step < self._warmup_steps,
+    return tf.cond(global_step < self._warmup_steps,
                  lambda: linear_warmup_lr,
                  lambda: after_warmup_lr)
-    return lr
 
   def get_config(self) -> Mapping[str, Any]:
     if isinstance(self._after_warmup_lr_sched,

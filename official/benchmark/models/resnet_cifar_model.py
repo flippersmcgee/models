@@ -58,10 +58,7 @@ def identity_building_block(input_tensor,
     Output tensor for the block.
   """
   filters1, filters2 = filters
-  if backend.image_data_format() == 'channels_last':
-    bn_axis = 3
-  else:
-    bn_axis = 1
+  bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
   conv_name_base = 'res' + str(stage) + block + '_branch'
   bn_name_base = 'bn' + str(stage) + block + '_branch'
 
@@ -117,10 +114,7 @@ def conv_building_block(input_tensor,
   And the shortcut should have strides=(2, 2) as well
   """
   filters1, filters2 = filters
-  if tf.keras.backend.image_data_format() == 'channels_last':
-    bn_axis = 3
-  else:
-    bn_axis = 1
+  bn_axis = 3 if tf.keras.backend.image_data_format() == 'channels_last' else 1
   conv_name_base = 'res' + str(stage) + block + '_branch'
   bn_name_base = 'bn' + str(stage) + block + '_branch'
 

@@ -61,8 +61,7 @@ def _flip_boxes_left_right(boxes):
   ymin, xmin, ymax, xmax = tf.split(value=boxes, num_or_size_splits=4, axis=1)
   flipped_xmin = tf.subtract(1.0, xmax)
   flipped_xmax = tf.subtract(1.0, xmin)
-  flipped_boxes = tf.concat([ymin, flipped_xmin, ymax, flipped_xmax], 1)
-  return flipped_boxes
+  return tf.concat([ymin, flipped_xmin, ymax, flipped_xmax], 1)
 
 
 def _flip_masks_left_right(masks):
@@ -140,9 +139,8 @@ def keypoint_change_coordinate_frame(keypoints, window, scope=None):
   with tf.name_scope(scope):
     win_height = window[2] - window[0]
     win_width = window[3] - window[1]
-    new_keypoints = box_list_ops.scale(keypoints - [window[0], window[1]],
+    return box_list_ops.scale(keypoints - [window[0], window[1]],
                                        1.0 / win_height, 1.0 / win_width)
-    return new_keypoints
 
 
 def keypoint_prune_outside_window(keypoints, window, scope=None):
@@ -173,9 +171,7 @@ def keypoint_prune_outside_window(keypoints, window, scope=None):
 
     new_y = tf.where(valid_indices, y, np.nan * tf.ones_like(y))
     new_x = tf.where(valid_indices, x, np.nan * tf.ones_like(x))
-    new_keypoints = tf.concat([new_y, new_x], 2)
-
-    return new_keypoints
+    return tf.concat([new_y, new_x], 2)
 
 
 def random_horizontal_flip(image,
@@ -288,23 +284,21 @@ def _compute_new_static_size(image, min_dimension, max_dimension):
   large_height = int(round(orig_height * large_scale_factor))
   large_width = int(round(orig_width * large_scale_factor))
   large_size = [large_height, large_width]
+  new_size = large_size
   if max_dimension:
     # Calculates the smaller of the possible sizes, use that if the larger
     # is too big.
     orig_max_dim = max(orig_height, orig_width)
     small_scale_factor = max_dimension / float(orig_max_dim)
-    # Scaling orig_(height|width) by small_scale_factor will make the larger
-    # dimension equal to max_dimension, save for floating point rounding
-    # errors. For reasonably-sized images, taking the nearest integer will
-    # reliably eliminate this error.
-    small_height = int(round(orig_height * small_scale_factor))
-    small_width = int(round(orig_width * small_scale_factor))
-    small_size = [small_height, small_width]
-    new_size = large_size
-    if max(large_size) > max_dimension:
+    if max(new_size) > max_dimension:
+      # Scaling orig_(height|width) by small_scale_factor will make the larger
+      # dimension equal to max_dimension, save for floating point rounding
+      # errors. For reasonably-sized images, taking the nearest integer will
+      # reliably eliminate this error.
+      small_height = int(round(orig_height * small_scale_factor))
+      small_width = int(round(orig_width * small_scale_factor))
+      small_size = [small_height, small_width]
       new_size = small_size
-  else:
-    new_size = large_size
   return tf.constant(new_size + [num_channels])
 
 
@@ -490,8 +484,7 @@ def keypoint_scale(keypoints, y_scale, x_scale, scope=None):
   with tf.name_scope(scope):
     y_scale = tf.cast(y_scale, tf.float32)
     x_scale = tf.cast(x_scale, tf.float32)
-    new_keypoints = keypoints * [[[y_scale, x_scale]]]
-    return new_keypoints
+    return keypoints * [[[y_scale, x_scale]]]
 
 
 def scale_boxes_to_pixel_coordinates(image, boxes, keypoints=None):

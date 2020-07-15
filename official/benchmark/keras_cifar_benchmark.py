@@ -372,13 +372,13 @@ class Resnet56KerasBenchmarkSynth(Resnet56KerasBenchmarkBase):
   """Synthetic benchmarks for ResNet56 and Keras."""
 
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
-    default_flags = {}
-    default_flags['skip_eval'] = True
-    default_flags['use_synthetic_data'] = True
-    default_flags['train_steps'] = 110
-    default_flags['log_steps'] = 10
-    default_flags['use_tensor_lr'] = False
-
+    default_flags = {
+        'skip_eval': True,
+        'use_synthetic_data': True,
+        'train_steps': 110,
+        'log_steps': 10,
+        'use_tensor_lr': False,
+    }
     super(Resnet56KerasBenchmarkSynth, self).__init__(
         output_dir=output_dir, default_flags=default_flags)
 
@@ -387,13 +387,13 @@ class Resnet56KerasBenchmarkReal(Resnet56KerasBenchmarkBase):
   """Real data benchmarks for ResNet56 and Keras."""
 
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
-    default_flags = {}
-    default_flags['skip_eval'] = True
-    default_flags['data_dir'] = os.path.join(root_data_dir, CIFAR_DATA_DIR_NAME)
-    default_flags['train_steps'] = 110
-    default_flags['log_steps'] = 10
-    default_flags['use_tensor_lr'] = False
-
+    default_flags = {
+        'skip_eval': True,
+        'data_dir': os.path.join(root_data_dir, CIFAR_DATA_DIR_NAME),
+        'train_steps': 110,
+        'log_steps': 10,
+        'use_tensor_lr': False,
+    }
     super(Resnet56KerasBenchmarkReal, self).__init__(
         output_dir=output_dir, default_flags=default_flags)
 

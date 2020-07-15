@@ -364,12 +364,10 @@ def file_based_convert_examples_to_features(examples,
                                                       FLAGS.use_bert_format)
 
     def create_int_feature(values):
-      f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
-      return f
+      return tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
 
     def create_float_feature(values):
-      f = tf.train.Feature(float_list=tf.train.FloatList(value=list(values)))
-      return f
+      return tf.train.Feature(float_list=tf.train.FloatList(value=list(values)))
 
     features = collections.OrderedDict()
     features["input_ids"] = create_int_feature(feature.input_ids)

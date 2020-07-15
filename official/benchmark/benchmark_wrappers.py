@@ -88,8 +88,7 @@ def enable_runtime_flags(decorated_func):
     else:
       saved_flag_values = None
     try:
-      result = decorated_func(*args, **kwargs)
-      return result
+      return decorated_func(*args, **kwargs)
     finally:
       if saved_flag_values:
         flagsaver.restore_flag_values(saved_flag_values)

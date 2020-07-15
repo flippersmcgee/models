@@ -188,12 +188,7 @@ def configure_cluster(worker_hosts=None, task_index=-1):
 
 
 def get_strategy_scope(strategy):
-  if strategy:
-    strategy_scope = strategy.scope()
-  else:
-    strategy_scope = DummyContextManager()
-
-  return strategy_scope
+  return strategy.scope() if strategy else DummyContextManager()
 
 
 class DummyContextManager(object):

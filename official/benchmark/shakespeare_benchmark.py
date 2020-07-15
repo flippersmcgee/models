@@ -217,12 +217,12 @@ class ShakespeareKerasBenchmarkReal(ShakespeareBenchmarkBase):
     """
     self.train_data = os.path.join(root_data_dir, SHAKESPEARE_TRAIN_DATA)
 
-    def_flags = {}
-    def_flags['training_data'] = self.train_data
-    def_flags['model_dir'] = ''
-    def_flags['train_epochs'] = 4
-    def_flags['log_steps'] = 50
-
+    def_flags = {
+        'training_data': self.train_data,
+        'model_dir': '',
+        'train_epochs': 4,
+        'log_steps': 50,
+    }
     super(ShakespeareKerasBenchmarkReal, self).__init__(
         output_dir=output_dir,
         root_data_dir=root_data_dir,

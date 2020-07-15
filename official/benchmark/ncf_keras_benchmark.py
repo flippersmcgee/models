@@ -65,10 +65,7 @@ class NCFKerasBenchmarkBase(PerfZeroBenchmark):
     stats = ncf_keras_main.run_ncf(FLAGS)
     wall_time_sec = time.time() - start_time_sec
 
-    metrics = []
-    metrics.append({'name': 'exp_per_second',
-                    'value': stats['avg_exp_per_second']})
-
+    metrics = [{'name': 'exp_per_second', 'value': stats['avg_exp_per_second']}]
     if hr_at_10_min > 0:
       metrics.append({'name': 'hr_at_10',
                       'value': stats['eval_hit_rate'],
@@ -90,23 +87,23 @@ class NCFKerasAccuracy(NCFKerasBenchmarkBase):
                default_flags=None,
                **kwargs):
     root_data_dir = root_data_dir if root_data_dir else ''
-    default_flags = {}
-    default_flags['dataset'] = 'ml-20m'
-    default_flags['num_gpus'] = 1
-    default_flags['train_epochs'] = 10
-    default_flags['clean'] = True
-    default_flags['batch_size'] = 99000
-    default_flags['learning_rate'] = 0.00382059
-    default_flags['beta1'] = 0.783529
-    default_flags['beta2'] = 0.909003
-    default_flags['epsilon'] = 1.45439e-07
-    default_flags['layers'] = [256, 256, 128, 64]
-    default_flags['num_factors'] = 64
-    default_flags['hr_threshold'] = 0.635
-    default_flags['ml_perf'] = True
-    default_flags['use_synthetic_data'] = False
-    default_flags['data_dir'] = os.path.join(root_data_dir, NCF_DATA_DIR_NAME)
-
+    default_flags = {
+        'dataset': 'ml-20m',
+        'num_gpus': 1,
+        'train_epochs': 10,
+        'clean': True,
+        'batch_size': 99000,
+        'learning_rate': 0.00382059,
+        'beta1': 0.783529,
+        'beta2': 0.909003,
+        'epsilon': 1.45439e-07,
+        'layers': [256, 256, 128, 64],
+        'num_factors': 64,
+        'hr_threshold': 0.635,
+        'ml_perf': True,
+        'use_synthetic_data': False,
+        'data_dir': os.path.join(root_data_dir, NCF_DATA_DIR_NAME),
+    }
     super(NCFKerasAccuracy, self).__init__(
         output_dir=output_dir,
         default_flags=default_flags,
@@ -398,24 +395,39 @@ class NCFKerasBenchmarkReal(NCFKerasBenchmarkBase):
                **kwargs):
 
     root_data_dir = root_data_dir if root_data_dir else ''
-    default_flags = {}
-    default_flags['dataset'] = 'ml-20m'
-    default_flags['num_gpus'] = 1
-    default_flags['train_epochs'] = 14
-    default_flags['clean'] = True
-    default_flags['batch_size'] = 99000
-    default_flags['eval_batch_size'] = 160000
-    default_flags['learning_rate'] = 0.00382059
-    default_flags['beta1'] = 0.783529
-    default_flags['beta2'] = 0.909003
-    default_flags['epsilon'] = 1.45439e-07
-    default_flags['layers'] = [256, 256, 128, 64]
-    default_flags['num_factors'] = 64
-    default_flags['hr_threshold'] = 0.635
-    default_flags['ml_perf'] = True
-    default_flags['use_synthetic_data'] = False
-    default_flags['train_dataset_path'] = os.path.join(
-        NCF_TF_REGRESSION_DATA_DIR_NAME, 'training_cycle_*/*')
+    default_flags = {
+        'dataset':
+        'ml-20m',
+        'num_gpus':
+        1,
+        'train_epochs':
+        14,
+        'clean':
+        True,
+        'batch_size':
+        99000,
+        'eval_batch_size':
+        160000,
+        'learning_rate':
+        0.00382059,
+        'beta1':
+        0.783529,
+        'beta2':
+        0.909003,
+        'epsilon':
+        1.45439e-07,
+        'layers': [256, 256, 128, 64],
+        'num_factors':
+        64,
+        'hr_threshold':
+        0.635,
+        'ml_perf':
+        True,
+        'use_synthetic_data':
+        False,
+        'train_dataset_path':
+        os.path.join(NCF_TF_REGRESSION_DATA_DIR_NAME, 'training_cycle_*/*'),
+    }
     default_flags['eval_dataset_path'] = os.path.join(
         NCF_TF_REGRESSION_DATA_DIR_NAME, 'eval_data/*')
     default_flags['input_meta_data_path'] = os.path.join(
@@ -454,21 +466,21 @@ class NCFKerasSynth(NCFKerasBenchmarkBase):
                default_flags=None,
                **kwargs):
 
-    default_flags = {}
-    default_flags['dataset'] = 'ml-20m'
-    default_flags['num_gpus'] = 1
-    default_flags['train_epochs'] = 8
-    default_flags['batch_size'] = 99000
-    default_flags['eval_batch_size'] = 160000
-    default_flags['learning_rate'] = 0.00382059
-    default_flags['beta1'] = 0.783529
-    default_flags['beta2'] = 0.909003
-    default_flags['epsilon'] = 1.45439e-07
-    default_flags['layers'] = [256, 256, 128, 64]
-    default_flags['num_factors'] = 64
-    default_flags['hr_threshold'] = 0.635
-    default_flags['use_synthetic_data'] = True
-
+    default_flags = {
+        'dataset': 'ml-20m',
+        'num_gpus': 1,
+        'train_epochs': 8,
+        'batch_size': 99000,
+        'eval_batch_size': 160000,
+        'learning_rate': 0.00382059,
+        'beta1': 0.783529,
+        'beta2': 0.909003,
+        'epsilon': 1.45439e-07,
+        'layers': [256, 256, 128, 64],
+        'num_factors': 64,
+        'hr_threshold': 0.635,
+        'use_synthetic_data': True,
+    }
     super(NCFKerasSynth, self).__init__(
         output_dir=output_dir,
         default_flags=default_flags,

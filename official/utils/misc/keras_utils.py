@@ -60,11 +60,7 @@ class TimeHistory(tf.keras.callbacks.Callback):
     self.steps_in_epoch = 0
     self.start_time = None
 
-    if logdir:
-      self.summary_writer = tf.summary.create_file_writer(logdir)
-    else:
-      self.summary_writer = None
-
+    self.summary_writer = tf.summary.create_file_writer(logdir) if logdir else None
     # Logs start of step 1 then end of each step based on log_steps interval.
     self.timestamp_log = []
 
@@ -190,8 +186,8 @@ def set_gpu_thread_mode_and_count(gpu_thread_mode,
   # Limit data preprocessing threadpool to CPU cores minus number of total GPU
   # private threads and memory copy threads.
   total_gpu_thread_count = per_gpu_thread_count * num_gpus
-  num_runtime_threads = num_gpus
   if not datasets_num_private_threads:
+    num_runtime_threads = num_gpus
     datasets_num_private_threads = min(
         cpu_count - total_gpu_thread_count - num_runtime_threads,
         num_gpus * 8)

@@ -18,8 +18,7 @@ class CallstackSampler(object):
     """Samples the current stack."""
     del signum
     stack = traceback.extract_stack(frame)
-    formatted_stack = []
-    formatted_stack.append(datetime.datetime.utcnow())
+    formatted_stack = [datetime.datetime.utcnow()]
     for filename, lineno, function_name, text in stack:
       formatted_frame = '{}:{}({})({})'.format(filename, lineno, function_name,
                                                text)

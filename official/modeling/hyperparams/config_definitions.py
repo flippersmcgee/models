@@ -221,5 +221,4 @@ def register_config_factory(name):
 
 def get_exp_config_creater(exp_name: str):
   """Looks up ExperimentConfig factory methods."""
-  exp_creater = registry.lookup(_REGISTERED_CONFIGS, exp_name)
-  return exp_creater
+  return registry.lookup(_REGISTERED_CONFIGS, exp_name)

@@ -25,28 +25,7 @@ from official.vision.detection.dataloader import shapemask_parser
 
 def parser_generator(params, mode):
   """Generator function for various dataset parser."""
-  if params.architecture.parser == 'retinanet_parser':
-    anchor_params = params.anchor
-    parser_params = params.retinanet_parser
-    parser_fn = retinanet_parser.Parser(
-        output_size=parser_params.output_size,
-        min_level=params.architecture.min_level,
-        max_level=params.architecture.max_level,
-        num_scales=anchor_params.num_scales,
-        aspect_ratios=anchor_params.aspect_ratios,
-        anchor_size=anchor_params.anchor_size,
-        match_threshold=parser_params.match_threshold,
-        unmatched_threshold=parser_params.unmatched_threshold,
-        aug_rand_hflip=parser_params.aug_rand_hflip,
-        aug_scale_min=parser_params.aug_scale_min,
-        aug_scale_max=parser_params.aug_scale_max,
-        use_autoaugment=parser_params.use_autoaugment,
-        autoaugment_policy_name=parser_params.autoaugment_policy_name,
-        skip_crowd_during_training=parser_params.skip_crowd_during_training,
-        max_num_instances=parser_params.max_num_instances,
-        use_bfloat16=params.architecture.use_bfloat16,
-        mode=mode)
-  elif params.architecture.parser == 'maskrcnn_parser':
+  if params.architecture.parser == 'maskrcnn_parser':
     anchor_params = params.anchor
     parser_params = params.maskrcnn_parser
     parser_fn = maskrcnn_parser.Parser(
@@ -67,6 +46,27 @@ def parser_generator(params, mode):
         max_num_instances=parser_params.max_num_instances,
         include_mask=params.architecture.include_mask,
         mask_crop_size=parser_params.mask_crop_size,
+        use_bfloat16=params.architecture.use_bfloat16,
+        mode=mode)
+  elif params.architecture.parser == 'retinanet_parser':
+    anchor_params = params.anchor
+    parser_params = params.retinanet_parser
+    parser_fn = retinanet_parser.Parser(
+        output_size=parser_params.output_size,
+        min_level=params.architecture.min_level,
+        max_level=params.architecture.max_level,
+        num_scales=anchor_params.num_scales,
+        aspect_ratios=anchor_params.aspect_ratios,
+        anchor_size=anchor_params.anchor_size,
+        match_threshold=parser_params.match_threshold,
+        unmatched_threshold=parser_params.unmatched_threshold,
+        aug_rand_hflip=parser_params.aug_rand_hflip,
+        aug_scale_min=parser_params.aug_scale_min,
+        aug_scale_max=parser_params.aug_scale_max,
+        use_autoaugment=parser_params.use_autoaugment,
+        autoaugment_policy_name=parser_params.autoaugment_policy_name,
+        skip_crowd_during_training=parser_params.skip_crowd_during_training,
+        max_num_instances=parser_params.max_num_instances,
         use_bfloat16=params.architecture.use_bfloat16,
         mode=mode)
   elif params.architecture.parser == 'shapemask_parser':

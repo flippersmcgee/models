@@ -152,8 +152,7 @@ def compute_f1(a_gold, a_pred):
     return 0
   precision = 1.0 * num_same / len(pred_toks)
   recall = 1.0 * num_same / len(gold_toks)
-  f1 = (2 * precision * recall) / (precision + recall)
-  return f1
+  return (2 * precision * recall) / (precision + recall)
 
 
 def find_best_thresh(preds, scores, na_probs, qid_to_has_ans):
@@ -169,10 +168,7 @@ def find_best_thresh(preds, scores, na_probs, qid_to_has_ans):
     if qid_to_has_ans[qid]:
       diff = scores[qid]
     else:
-      if preds[qid]:
-        diff = -1
-      else:
-        diff = 0
+      diff = -1 if preds[qid] else 0
     cur_score += diff
     if cur_score > best_score:
       best_score = cur_score
@@ -238,10 +234,7 @@ def _compute_softmax(scores):
     exp_scores.append(x)
     total_sum += x
 
-  probs = []
-  for score in exp_scores:
-    probs.append(score / total_sum)
-  return probs
+  return [score / total_sum for score in exp_scores]
 
 
 class SquadExample(object):
@@ -275,7 +268,6 @@ class SquadExample(object):
     s += ", paragraph_text: [%s]" % (" ".join(self.paragraph_text))
     if self.start_position:
       s += ", start_position: %d" % (self.start_position)
-    if self.start_position:
       s += ", is_impossible: %r" % (self.is_impossible)
     return s
 
@@ -894,13 +886,11 @@ class FeatureWriter(object):
     self.num_features += 1
 
     def create_int_feature(values):
-      feature = tf.train.Feature(
+      return tf.train.Feature(
           int64_list=tf.train.Int64List(value=list(values)))
-      return feature
 
     def create_float_feature(values):
-      f = tf.train.Feature(float_list=tf.train.FloatList(value=list(values)))
-      return f
+      return tf.train.Feature(float_list=tf.train.FloatList(value=list(values)))
 
     features = collections.OrderedDict()
     features["unique_ids"] = create_int_feature([feature.unique_id])

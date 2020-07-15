@@ -62,11 +62,7 @@ def print_(*args):
 
 def preprocess_text(inputs, lower=False, remove_space=True, keep_accents=False):
   """Preprocesses texts."""
-  if remove_space:
-    outputs = ' '.join(inputs.strip().split())
-  else:
-    outputs = inputs
-
+  outputs = ' '.join(inputs.strip().split()) if remove_space else inputs
   outputs = outputs.replace('``', '"').replace("''", '"')
 
   if six.PY2 and isinstance(outputs, str):
@@ -121,5 +117,4 @@ def encode_pieces(sp_model, text, return_unicode=True, sample=False):
 
 def encode_ids(sp_model, text, sample=False):
   pieces = encode_pieces(sp_model, text, return_unicode=False, sample=sample)
-  ids = [sp_model.PieceToId(piece) for piece in pieces]
-  return ids
+  return [sp_model.PieceToId(piece) for piece in pieces]

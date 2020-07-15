@@ -177,10 +177,10 @@ def create_dataset(file_paths,
   """Creates input dataset from (tf)records files for pretraining."""
   dataset = tf.data.Dataset.list_files(file_paths, shuffle=is_training)
 
-  if input_pipeline_context and input_pipeline_context.num_input_pipelines > 1:
-    if not is_training or params.input_sharding:
-      dataset = dataset.shard(input_pipeline_context.num_input_pipelines,
-                              input_pipeline_context.input_pipeline_id)
+  if (input_pipeline_context and input_pipeline_context.num_input_pipelines > 1
+      and (not is_training or params.input_sharding)):
+    dataset = dataset.shard(input_pipeline_context.num_input_pipelines,
+                            input_pipeline_context.input_pipeline_id)
 
   if is_training:
     dataset = dataset.repeat()

@@ -200,6 +200,5 @@ class RelativePositionEmbedding(tf.keras.layers.Layer):
         -log_timescale_increment)
     scaled_time = tf.expand_dims(position, 1) * tf.expand_dims(inv_timescales,
                                                                0)
-    position_embeddings = tf.concat([tf.sin(scaled_time), tf.cos(scaled_time)],
+    return tf.concat([tf.sin(scaled_time), tf.cos(scaled_time)],
                                     axis=1)
-    return position_embeddings

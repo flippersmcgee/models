@@ -189,9 +189,8 @@ class Bert2Bert(tf.keras.Model):
         target_ids, bias_type="decoder_self")
     decoder_inputs["target_ids"] = target_ids
     decoder_outputs = self.decoder_layer(decoder_inputs)
-    logits = embedding_linear(self.decoder_layer.embedding_lookup.embeddings,
+    return embedding_linear(self.decoder_layer.embedding_lookup.embeddings,
                               decoder_outputs)
-    return logits
 
   def _init_cache(self, batch_size):
     num_heads = self.params.num_decoder_attn_heads
@@ -250,10 +249,7 @@ class Bert2Bert(tf.keras.Model):
     start_token_ids = tf.ones([batch_size],
                               tf.int32) * self.params.start_token_id
     # Add encoder output and attention bias to the cache.
-    if self.params.use_cache:
-      cache = self._init_cache(batch_size)
-    else:
-      cache = {}
+    cache = self._init_cache(batch_size) if self.params.use_cache else {}
     cache["all_encoder_outputs"] = all_encoder_outputs
     cache["attention_bias"] = encoder_decoder_attention_bias
     decoded_ids, scores = self.predict_decode(start_token_ids, cache)
@@ -297,10 +293,7 @@ class NHNet(Bert2Bert):
 
     def _symbols_to_logits_fn(ids, i, cache):
       """Generate logits for next candidate IDs."""
-      if self.params.use_cache:
-        target_length = 1
-      else:
-        target_length = i + 1
+      target_length = 1 if self.params.use_cache else i + 1
       decoder_inputs = dict(
           doc_attention_probs=self._expand_doc_attention_probs(
               cache["doc_attention_probs"], target_length),
@@ -357,10 +350,7 @@ class NHNet(Bert2Bert):
       return self.train_decode(decoder_outputs)
 
     # Adds encoder output and attention bias to the cache.
-    if self.params.use_cache:
-      cache = self._init_cache(batch_size)
-    else:
-      cache = {}
+    cache = self._init_cache(batch_size) if self.params.use_cache else {}
     cache["all_encoder_outputs"] = [encoder_outputs]
     cache["attention_bias"] = encoder_decoder_attention_bias
     cache["doc_attention_probs"] = doc_attention_probs

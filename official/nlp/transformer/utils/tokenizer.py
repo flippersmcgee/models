@@ -50,11 +50,9 @@ _UNDEFINED_UNICODE = u"\u3013"
 
 
 def alphanumeric_char_set():
-  return set(
-      six.unichr(i)
-      for i in xrange(sys.maxunicode)
-      if (unicodedata.category(six.unichr(i)).startswith("L") or
-          unicodedata.category(six.unichr(i)).startswith("N")))
+  return {six.unichr(i) for i in xrange(sys.maxunicode)
+        if (unicodedata.category(six.unichr(i)).startswith("L") or
+            unicodedata.category(six.unichr(i)).startswith("N"))}
 
 
 # Set contains all letter and number characters.

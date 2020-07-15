@@ -662,11 +662,7 @@ class TransformerBaseKerasBenchmarkReal(TransformerKerasBenchmark):
   """Transformer based version real data benchmark tests."""
 
   def __init__(self, output_dir=TMP_DIR, root_data_dir=TMP_DIR, **kwargs):
-    def_flags = {}
-    def_flags['param_set'] = 'base'
-    def_flags['train_steps'] = 50
-    def_flags['log_steps'] = 10
-
+    def_flags = {'param_set': 'base', 'train_steps': 50, 'log_steps': 10}
     super(TransformerBaseKerasBenchmarkReal, self).__init__(
         output_dir=output_dir, default_flags=def_flags,
         root_data_dir=root_data_dir, batch_per_gpu=4096)
@@ -677,11 +673,7 @@ class TransformerBigKerasBenchmarkReal(TransformerKerasBenchmark):
 
   def __init__(self, output_dir=TMP_DIR, root_data_dir=TMP_DIR,
                tpu=None, **kwargs):
-    def_flags = {}
-    def_flags['param_set'] = 'big'
-    def_flags['train_steps'] = 50
-    def_flags['log_steps'] = 10
-
+    def_flags = {'param_set': 'big', 'train_steps': 50, 'log_steps': 10}
     super(TransformerBigKerasBenchmarkReal, self).__init__(
         output_dir=output_dir, default_flags=def_flags,
         root_data_dir=root_data_dir, batch_per_gpu=3072,

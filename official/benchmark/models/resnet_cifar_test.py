@@ -65,7 +65,7 @@ class KerasCifarTest(googletest.TestCase):
         "-model_dir", "keras_cifar_no_dist_strat",
         "-data_format", "channels_last",
     ]
-    extra_flags = extra_flags + self._extra_flags
+    extra_flags += self._extra_flags
 
     integration.run_synthetic(
         main=resnet_cifar_main.run,
@@ -81,7 +81,7 @@ class KerasCifarTest(googletest.TestCase):
         "-model_dir", "keras_cifar_graph_no_dist_strat",
         "-data_format", "channels_last",
     ]
-    extra_flags = extra_flags + self._extra_flags
+    extra_flags += self._extra_flags
 
     integration.run_synthetic(
         main=resnet_cifar_main.run,
@@ -103,7 +103,7 @@ class KerasCifarTest(googletest.TestCase):
         "-model_dir", "keras_cifar_1_gpu",
         "-data_format", "channels_last",
     ]
-    extra_flags = extra_flags + self._extra_flags
+    extra_flags += self._extra_flags
 
     integration.run_synthetic(
         main=resnet_cifar_main.run,
@@ -125,7 +125,7 @@ class KerasCifarTest(googletest.TestCase):
         "-model_dir", "keras_cifar_graph_1_gpu",
         "-data_format", "channels_last",
     ]
-    extra_flags = extra_flags + self._extra_flags
+    extra_flags += self._extra_flags
 
     integration.run_synthetic(
         main=resnet_cifar_main.run,
@@ -146,7 +146,7 @@ class KerasCifarTest(googletest.TestCase):
         "-distribution_strategy", "mirrored",
         "-model_dir", "keras_cifar_2_gpu",
     ]
-    extra_flags = extra_flags + self._extra_flags
+    extra_flags += self._extra_flags
 
     integration.run_synthetic(
         main=resnet_cifar_main.run,
@@ -167,7 +167,7 @@ class KerasCifarTest(googletest.TestCase):
         "-distribution_strategy", "mirrored",
         "-model_dir", "keras_cifar_graph_2_gpu",
     ]
-    extra_flags = extra_flags + self._extra_flags
+    extra_flags += self._extra_flags
 
     integration.run_synthetic(
         main=resnet_cifar_main.run,
